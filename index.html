@@ -1983,11 +1983,357 @@
             opacity: 0.6;
         }
 
+        /* ==================== 新手教程样式 ==================== */
+        #tutorial-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: none;
+            pointer-events: none;
+        }
+
+        #tutorial-overlay.active {
+            display: block;
+        }
+
+        /* 教程立绘容器 */
+        .tutorial-sprites {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .tutorial-sprite {
+            position: absolute;
+            bottom: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .tutorial-sprite.he {
+            left: 5%;
+            width: 120px;
+            transform-origin: bottom center;
+        }
+
+        .tutorial-sprite.huang {
+            left: 5%;
+            width: 120px;
+            transform-origin: bottom center;
+        }
+
+        .tutorial-sprite.xiaoh {
+            right: 5%;
+            width: 100px;
+            transform-origin: bottom center;
+        }
+
+        .tutorial-sprite.speaking {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+        }
+
+        .tutorial-sprite.hidden {
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+        }
+
+        .tutorial-sprite img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* 对话框 */
+        .tutorial-dialog {
+            position: absolute;
+            bottom: 0;
+            left: 10px;
+            right: 10px;
+            max-width: calc(100% - 20px);
+            padding: 15px 20px;
+            background: linear-gradient(180deg, rgba(93, 58, 26, 0.95) 0%, rgba(61, 38, 18, 0.98) 100%);
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.3);
+            pointer-events: auto;
+            box-sizing: border-box;
+        }
+
+        .dialog-speaker {
+            font-size: 13px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 6px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .dialog-text {
+            font-size: 15px;
+            color: #FFF8E7;
+            line-height: 1.5;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            white-space: pre-wrap;
+            margin-bottom: 12px;
+            min-height: 50px;
+            word-wrap: break-word;
+        }
+
+        .dialog-continue {
+            text-align: center;
+            font-size: 13px;
+            color: #FFB347;
+            animation: pulse-scale 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 箭头指引 */
+        .tutorial-arrow {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            pointer-events: none;
+            z-index: 1001;
+        }
+
+        .tutorial-arrow img {
+            width: 100%;
+            height: 100%;
+            animation: pulse-scale 1s ease-in-out infinite;
+        }
+
+        .tutorial-arrow.up { transform: rotate(-90deg); }
+        .tutorial-arrow.down { transform: rotate(90deg); }
+        .tutorial-arrow.left { transform: rotate(180deg); }
+        .tutorial-arrow.right { transform: rotate(0deg); }
+
+        /* 高亮边框 */
+        .tutorial-highlight {
+            position: absolute;
+            border: 4px solid #FFD700;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.7), 
+                        0 0 50px rgba(255, 215, 0, 0.4),
+                        inset 0 0 15px rgba(255, 215, 0, 0.3);
+            pointer-events: none;
+            z-index: 999;
+            animation: highlight-pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes highlight-pulse {
+            0%, 100% {
+                border-color: #FFD700;
+                box-shadow: 0 0 25px rgba(255, 215, 0, 0.7), 
+                            0 0 50px rgba(255, 215, 0, 0.4),
+                            inset 0 0 15px rgba(255, 215, 0, 0.3);
+            }
+            50% {
+                border-color: #FFEC8B;
+                box-shadow: 0 0 35px rgba(255, 236, 139, 0.9), 
+                            0 0 60px rgba(255, 236, 139, 0.5),
+                            inset 0 0 20px rgba(255, 236, 139, 0.4);
+            }
+        }
+
+        /* 教程步骤提示 */
+        .tutorial-step {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 215, 0, 0.9);
+            color: #5D3A1A;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 开场画面 */
+        #opening-scene {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(180deg, #2C1810 0%, #1a0f0a 100%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .opening-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('assets/背景/c0e4c82e495bcb97c229f056803f610f.jpg') center/cover;
+            opacity: 0.3;
+        }
+
+        .opening-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .opening-xiaoh {
+            width: 150px;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .opening-text {
+            font-size: 16px;
+            color: #FFF8E7;
+            line-height: 1.8;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+            margin-bottom: 40px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .opening-start {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #5D3A1A;
+            background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 165, 0, 0.4);
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+            transition: transform 0.2s;
+        }
+
+        .opening-start:hover {
+            transform: scale(1.05);
+        }
+
+        /* 教程完成弹窗 */
+        #tutorial-complete {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1500;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #tutorial-complete.active {
+            display: flex;
+        }
+
+        .complete-content {
+            background: linear-gradient(180deg, #FFF8E7 0%, #F5E6D3 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .complete-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #5D3A1A;
+            margin-bottom: 20px;
+        }
+
+        .complete-list {
+            text-align: left;
+            font-size: 14px;
+            color: #6B4423;
+            line-height: 2;
+            margin-bottom: 25px;
+        }
+
+        .complete-btn {
+            padding: 12px 35px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(180deg, #4ECDC4 0%, #26A69A 100%);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .complete-btn:hover {
+            transform: scale(1.05);
+        }
+
     </style>
 </head>
 <body>
+    <!-- 开场画面 -->
+    <div id="opening-scene">
+        <div class="opening-bg"></div>
+        <div class="opening-content">
+            <img class="opening-xiaoh" src="assets/背景/小h立绘.png" alt="小H">
+            <div class="opening-text">
+                这就是蘑菇屋。何老师管生活，黄老师管吃饭。<br>
+                我管发呆。哦，还有件事——这儿捡的蘑菇，能当钱使。<br>
+                你要是愿意帮我捡捡，顺便喂喂我，那就太好了。<br>
+                汪。
+            </div>
+            <button class="opening-start" id="opening-start">开始冒险</button>
+        </div>
+    </div>
+
     <!-- 全屏背景层 -->
     <div id="fullscreen-bg" class="home-day"></div>
+    
+    <!-- 教程完成弹窗 -->
+    <div id="tutorial-complete">
+        <div class="complete-content">
+            <div class="complete-title">🎉 恭喜完成新手教程！</div>
+            <div class="complete-list">
+                🍄 蘑菇是这里的钱，捡得越多能买的东西越好<br>
+                🍖 带不同的食物，小H会去不同的地方<br>
+                🖼️ 小H每次出门都会寄明信片回来
+            </div>
+            <button class="complete-btn" id="complete-btn">开始自由探索</button>
+        </div>
+    </div>
     
     <!-- 加载界面 -->
     <div id="loading-screen">
@@ -2005,6 +2351,32 @@
     </div>
 
     <div id="game-container">
+        <!-- 教程覆盖层 -->
+        <div id="tutorial-overlay">
+            <div class="tutorial-step" id="tutorial-step">步骤 01 / 07</div>
+            <div class="tutorial-sprites">
+                <div class="tutorial-sprite he hidden" id="tutorial-he">
+                    <img src="assets/背景/何老师立绘.png" alt="何老师">
+                </div>
+                <div class="tutorial-sprite huang hidden" id="tutorial-huang">
+                    <img src="assets/背景/c0e4c82e495bcb97c229f056803f610f.jpg" alt="黄老师">
+                </div>
+                <div class="tutorial-sprite xiaoh hidden" id="tutorial-xiaoh">
+                    <img src="assets/背景/小h立绘.png" alt="小H">
+                </div>
+            </div>
+            <div class="tutorial-dialog">
+                <div class="dialog-speaker" id="dialog-speaker">小H</div>
+                <div class="dialog-text" id="dialog-text">嘿，新面孔。</div>
+                <div class="dialog-continue">点击屏幕继续 ▼</div>
+            </div>
+            <!-- 箭头指引 -->
+            <div class="tutorial-arrow" id="tutorial-arrow" style="display: none;">
+                <img src="assets/背景/箭头.png" alt="指引箭头">
+            </div>
+            <!-- 高亮边框 -->
+            <div class="tutorial-highlight" id="tutorial-highlight" style="display: none;"></div>
+        </div>
         <!-- 首页 -->
         <div id="home-page" class="day">
             <!-- UI -->
@@ -2553,7 +2925,9 @@
                 windmill: 0,
                 bowl: 0,
                 collar: 0
-            }
+            },
+            tutorialStep: 0, // 教程步骤
+            tutorialCompleted: false // 是否完成教程
         };
 
         // ==================== 音效系统 ====================
@@ -2780,7 +3154,21 @@
             actionPet: document.getElementById('action-pet'),
             actionPlay: document.getElementById('action-play'),
             interactXiaoh: document.getElementById('interact-xiaoh'),
-            diaryList: document.getElementById('diary-list')
+            diaryList: document.getElementById('diary-list'),
+            // 教程相关
+            openingScene: document.getElementById('opening-scene'),
+            openingStart: document.getElementById('opening-start'),
+            tutorialOverlay: document.getElementById('tutorial-overlay'),
+            tutorialStep: document.getElementById('tutorial-step'),
+            tutorialHe: document.getElementById('tutorial-he'),
+            tutorialHuang: document.getElementById('tutorial-huang'),
+            tutorialXiaoh: document.getElementById('tutorial-xiaoh'),
+            dialogSpeaker: document.getElementById('dialog-speaker'),
+            dialogText: document.getElementById('dialog-text'),
+            tutorialArrow: document.getElementById('tutorial-arrow'),
+            tutorialHighlight: document.getElementById('tutorial-highlight'),
+            tutorialComplete: document.getElementById('tutorial-complete'),
+            completeBtn: document.getElementById('complete-btn')
         };
 
         // ==================== 工具函数 ====================
@@ -3860,6 +4248,11 @@
                 renderInventory(); // 重新渲染物品栏以显示新购买的物品
                 gameState.fromInventory = false; // 重置状态
             }
+            // 如果是教程模式下从商店返回，继续教程
+            if (tutorialStarted && !gameState.tutorialCompleted && currentTutorialStep === 2) {
+                // 从商店返回后继续下一步教程
+                nextTutorialStep();
+            }
         });
 
         // ==================== 目的地选择逻辑 ====================
@@ -4132,6 +4525,13 @@
             gameState.currentTrip = null;
 
             showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '欢迎回家！🍄 +' + trip.reward);
+
+            // 如果是教程模式下领取奖励，继续下一步教程
+            if (tutorialStarted && !gameState.tutorialCompleted) {
+                setTimeout(() => {
+                    showTutorialStep(6); // 直接进入步骤7（索引6）
+                }, 1500);
+            }
         });
 
         // 分享
@@ -4835,6 +5235,409 @@
         }, LOADING_TIMEOUT);
 
         initResponsive();
+
+        // ==================== 新手教程系统 ====================
+        const TUTORIAL_DATA = [
+            {
+                step: 1,
+                title: '欢迎来到蘑菇屋',
+                dialogs: [
+                    { speaker: '小H', text: '嘿，新面孔。' },
+                    { speaker: '小H', text: '你是来帮忙的吧？正好，院子里的蘑菇还没摘。' },
+                    { speaker: '小H', text: '你叫我小H就行。我一般在这儿趴着，饿了就闻闻厨房。' }
+                ],
+                guide: null
+            },
+            {
+                step: 2,
+                title: '捡蘑菇',
+                dialogs: [
+                    { speaker: '小H', text: '看见那些蘑菇了吗？' },
+                    { speaker: '小H', text: '这是蘑菇屋的"钱"，捡了就能去商店换好吃的。何老师管这叫"货币"，我管这叫"好吃的通行证"。' },
+                    { speaker: '旁白', text: '💡 点击高亮框住的蘑菇来收集' }
+                ],
+                guide: { type: 'highlight', target: '.mushroom:first-child', arrow: 'down' },
+                trigger: 'collect_mushroom'
+            },
+            {
+                step: 3,
+                title: '蘑菇商店',
+                dialogs: [
+                    { speaker: '小H', text: '骨头5个蘑菇，羊排15个，便当30个……' },
+                    { speaker: '小H', text: '带不同的吃的出门，我会去不同的地方。带好的我就跑远点，带一般的就在附近转转。' },
+                    { speaker: '小H', text: '你自己看着买吧~' }
+                ],
+                guide: { type: 'button', target: '#shop-btn', arrow: 'up' },
+                trigger: 'open_shop'
+            },
+            {
+                step: 4,
+                title: '和小H互动',
+                dialogs: [
+                    { speaker: '小H', text: '你……你不摸摸我吗？' },
+                    { speaker: '何老师', text: '小H最喜欢被摸头了，你试试~' },
+                    { speaker: '小H', text: '何老师每次来都摸我头，超舒服的。' },
+                    { speaker: '旁白', text: '💡 点击小H进入互动界面，先点击【摸摸】，再点击【喂食】' }
+                ],
+                guide: { type: 'button', target: '#xiaoh-character', arrow: 'up' },
+                trigger: 'interact_feed'
+            },
+            {
+                step: 5,
+                title: '出发探险',
+                dialogs: [
+                    { speaker: '小H', text: '吃饱了我想出去溜达！' },
+                    { speaker: '小H', text: '外面可好玩了，有水库、有玉米地、还有彩灯。' },
+                    { speaker: '小H', text: '等我给你寄明信片！' },
+                    { speaker: '旁白', text: '💡 点击【探险】按钮，选择食物后点击出发' }
+                ],
+                guide: { type: 'button', target: '#go-btn', arrow: 'up' },
+                trigger: 'xiaoh_leave'
+            },
+            {
+                step: 6,
+                title: '收到明信片',
+                dialogs: [],
+                guide: null,
+                autoNext: true
+            },
+            {
+                step: 7,
+                title: '教程完成',
+                dialogs: [
+                    { speaker: '旁白', text: '🎉 恭喜完成新手教程！记住这几件事——' },
+                    { speaker: '旁白', text: '🍄 蘑菇是这里的钱，捡得越多能买的东西越好' },
+                    { speaker: '旁白', text: '🍖 带不同的食物，小H会去不同的地方' },
+                    { speaker: '旁白', text: '🖼️ 小H每次出门都会寄明信片回来' },
+                    { speaker: '小H', text: '懂了不？不懂就再看我出去一趟。' },
+                    { speaker: '小H', text: '好了，你可以自由发挥了。我去趴会儿。' },
+                    { speaker: '小H', text: '有事叫我。汪。' }
+                ],
+                guide: null,
+                autoComplete: true
+            }
+        ];
+
+        let currentDialogIndex = 0;
+        let currentTutorialStep = 0;
+        let tutorialStarted = false;
+
+        function showOpeningScene() {
+            el.openingScene.style.display = 'flex';
+            el.loadingScreen.style.display = 'none';
+        }
+
+        function hideOpeningScene() {
+            el.openingScene.style.display = 'none';
+            startTutorial();
+        }
+
+        function startTutorial() {
+            tutorialStarted = true;
+            currentTutorialStep = 0;
+            currentDialogIndex = 0;
+            gameState.tutorialStep = 0;
+            showTutorialStep(0);
+        }
+
+        function showTutorialStep(stepIndex) {
+            if (stepIndex >= TUTORIAL_DATA.length) {
+                completeTutorial();
+                return;
+            }
+
+            const step = TUTORIAL_DATA[stepIndex];
+            currentTutorialStep = stepIndex;
+            gameState.tutorialStep = stepIndex;
+
+            // 更新步骤提示
+            el.tutorialStep.textContent = `步骤 ${String(step.step).padStart(2, '0')} / ${String(TUTORIAL_DATA.length).padStart(2, '0')}`;
+
+            // 显示教程覆盖层
+            el.tutorialOverlay.classList.add('active');
+
+            // 显示对话框
+            currentDialogIndex = 0;
+            showDialog(stepIndex, 0);
+        }
+
+        function showDialog(stepIndex, dialogIndex) {
+            const step = TUTORIAL_DATA[stepIndex];
+            
+            // 如果没有对话内容，直接显示指引
+            if (!step.dialogs || step.dialogs.length === 0) {
+                showGuide(step);
+                return;
+            }
+            
+            if (dialogIndex >= step.dialogs.length) {
+                // 当前步骤对话结束，显示指引
+                showGuide(step);
+                return;
+            }
+
+            const dialog = step.dialogs[dialogIndex];
+            currentDialogIndex = dialogIndex;
+
+            // 更新对话框内容
+            el.dialogSpeaker.textContent = dialog.speaker;
+            el.dialogText.textContent = dialog.text;
+
+            // 更新立绘显示
+            updateSprites(dialog.speaker);
+
+            // 显示对话框
+            document.querySelector('.tutorial-dialog').style.display = 'block';
+
+            // 启用对话框点击事件（用于继续对话）
+            document.querySelector('.tutorial-dialog').style.pointerEvents = 'auto';
+
+            // 添加点击继续事件
+            const overlay = el.tutorialOverlay;
+            const handleClick = () => {
+                overlay.removeEventListener('click', handleClick);
+                showDialog(stepIndex, dialogIndex + 1);
+            };
+            overlay.addEventListener('click', handleClick);
+        }
+
+        function updateSprites(speaker) {
+            // 隐藏所有立绘
+            el.tutorialHe.classList.add('hidden');
+            el.tutorialHuang.classList.add('hidden');
+            el.tutorialXiaoh.classList.add('hidden');
+
+            // 移除说话状态
+            el.tutorialHe.classList.remove('speaking');
+            el.tutorialHuang.classList.remove('speaking');
+            el.tutorialXiaoh.classList.remove('speaking');
+
+            // 小H说话时不显示立绘（主屏幕已有小H）
+            if (speaker === '何老师') {
+                el.tutorialHe.classList.remove('hidden');
+                el.tutorialHe.classList.add('speaking');
+            } else if (speaker === '黄老师') {
+                el.tutorialHuang.classList.remove('hidden');
+                el.tutorialHuang.classList.add('speaking');
+            }
+            // 小H说话时不显示立绘
+        }
+
+        function showGuide(step) {
+            // 隐藏对话框的点击事件，允许点击穿透到游戏元素
+            document.querySelector('.tutorial-dialog').style.pointerEvents = 'none';
+
+            // 隐藏对话框，让用户可以看到并点击目标按钮
+            document.querySelector('.tutorial-dialog').style.display = 'none';
+
+            if (!step.guide) {
+                // 没有指引，直接进入下一步或完成
+                if (step.trigger) {
+                    // 等待触发事件
+                    setupTrigger(step.trigger, step.step);
+                } else if (step.autoComplete) {
+                    // 自动完成教程（用于步骤7）
+                    setTimeout(() => completeTutorial(), 3000);
+                } else if (step.autoNext) {
+                    // 自动进入下一步（用于步骤6）
+                    setTimeout(() => nextTutorialStep(), 500);
+                } else {
+                    // 自动进入下一步
+                    setTimeout(() => nextTutorialStep(), 1500);
+                }
+                return;
+            }
+
+            const guide = step.guide;
+
+            // 显示高亮或箭头
+            if (guide.type === 'highlight') {
+                // 高亮指定元素
+                const target = document.querySelector(guide.target);
+                if (target) {
+                    const rect = target.getBoundingClientRect();
+                    el.tutorialHighlight.style.display = 'block';
+                    el.tutorialHighlight.style.left = rect.left + 'px';
+                    el.tutorialHighlight.style.top = rect.top + 'px';
+                    el.tutorialHighlight.style.width = rect.width + 'px';
+                    el.tutorialHighlight.style.height = rect.height + 'px';
+                }
+            } else if (guide.type === 'button') {
+                // 箭头指向指定按钮
+                const target = document.querySelector(guide.target);
+                if (target) {
+                    const rect = target.getBoundingClientRect();
+                    el.tutorialArrow.style.display = 'block';
+                    el.tutorialArrow.className = `tutorial-arrow ${guide.arrow}`;
+                    if (guide.arrow === 'up') {
+                        el.tutorialArrow.style.left = rect.left + rect.width / 2 - 20 + 'px';
+                        el.tutorialArrow.style.top = rect.bottom + 10 + 'px';
+                    } else if (guide.arrow === 'down') {
+                        el.tutorialArrow.style.left = rect.left + rect.width / 2 - 20 + 'px';
+                        el.tutorialArrow.style.top = rect.top - 50 + 'px';
+                    } else if (guide.arrow === 'left') {
+                        el.tutorialArrow.style.left = rect.right + 10 + 'px';
+                        el.tutorialArrow.style.top = rect.top + rect.height / 2 - 20 + 'px';
+                    } else if (guide.arrow === 'right') {
+                        el.tutorialArrow.style.left = rect.left - 50 + 'px';
+                        el.tutorialArrow.style.top = rect.top + rect.height / 2 - 20 + 'px';
+                    }
+                }
+            }
+
+            // 设置触发事件
+            if (step.trigger) {
+                setupTrigger(step.trigger, step.step);
+            }
+        }
+
+        function setupTrigger(triggerType, stepNum) {
+            // 根据触发类型设置事件监听
+            switch (triggerType) {
+                case 'collect_mushroom':
+                    // 监听蘑菇点击
+                    const mushrooms = document.querySelectorAll('.mushroom');
+                    mushrooms.forEach(mushroom => {
+                        mushroom.addEventListener('click', onCollectMushroomTrigger);
+                    });
+                    break;
+                case 'open_shop':
+                    // 监听商店按钮点击
+                    el.shopBtn.addEventListener('click', onOpenShopTrigger);
+                    break;
+                case 'interact_feed':
+                    // 监听喂食按钮点击（先摸摸再喂食）
+                    const actionFeed = document.getElementById('action-feed');
+                    if (actionFeed) {
+                        actionFeed.addEventListener('click', onInteractFeedTrigger);
+                    }
+                    break;
+                case 'xiaoh_leave':
+                    // 监听小H出发（在confirmGo按钮点击时触发）
+                    el.confirmGo.addEventListener('click', onXiaohLeaveTrigger);
+                    break;
+                case 'collect_postcard':
+                    // 领取奖励按钮的教程逻辑在领取奖励事件处理中直接处理，不需要额外监听
+                    break;
+            }
+        }
+
+        function clearTrigger(triggerType) {
+            switch (triggerType) {
+                case 'collect_mushroom':
+                    const mushrooms = document.querySelectorAll('.mushroom');
+                    mushrooms.forEach(mushroom => {
+                        mushroom.removeEventListener('click', onCollectMushroomTrigger);
+                    });
+                    break;
+                case 'open_shop':
+                    el.shopBtn.removeEventListener('click', onOpenShopTrigger);
+                    break;
+                case 'interact_feed':
+                    const actionFeed = document.getElementById('action-feed');
+                    if (actionFeed) {
+                        actionFeed.removeEventListener('click', onInteractFeedTrigger);
+                    }
+                    break;
+                case 'xiaoh_leave':
+                    el.confirmGo.removeEventListener('click', onXiaohLeaveTrigger);
+                    break;
+                case 'collect_postcard':
+                    // 领取奖励按钮的教程逻辑在领取奖励事件处理中直接处理，不需要移除监听
+                    break;
+            }
+        }
+
+        function onCollectMushroomTrigger() {
+            clearTrigger('collect_mushroom');
+            hideGuide();
+            // 显示反馈
+            showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '够买根骨头了！走走走，去商店！');
+            setTimeout(nextTutorialStep, 1500);
+        }
+
+        function onOpenShopTrigger() {
+            clearTrigger('open_shop');
+            hideGuide();
+            // 不立即进入下一步，等待用户从商店返回后再继续（在商店返回按钮中处理）
+        }
+
+        function onInteractFeedTrigger() {
+            clearTrigger('interact_feed');
+            hideGuide();
+            showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '嘎嘣嘎嘣……嗯嗯嗯……好吃！何老师说的对，骨头就该趁热啃！');
+            setTimeout(nextTutorialStep, 2000);
+        }
+
+        function onXiaohLeaveTrigger() {
+            clearTrigger('xiaoh_leave');
+            hideGuide();
+            // 不立即进入下一步，等待小H回来收到明信片后再继续
+        }
+
+        function hideGuide() {
+            el.tutorialArrow.style.display = 'none';
+            el.tutorialHighlight.style.display = 'none';
+        }
+
+        function nextTutorialStep() {
+            const nextStep = currentTutorialStep + 1;
+            if (nextStep >= TUTORIAL_DATA.length) {
+                completeTutorial();
+            } else {
+                showTutorialStep(nextStep);
+            }
+        }
+
+        function completeTutorial() {
+            el.tutorialOverlay.classList.remove('active');
+            hideGuide();
+            gameState.tutorialCompleted = true;
+            saveGame();
+
+            // 显示完成弹窗
+            el.tutorialComplete.classList.add('active');
+        }
+
+        // 教程完成按钮点击
+        el.completeBtn.addEventListener('click', () => {
+            playClickSound();
+            el.tutorialComplete.classList.remove('active');
+        });
+
+        // 开场开始按钮
+        el.openingStart.addEventListener('click', () => {
+            playClickSound();
+            hideOpeningScene();
+        });
+
+        // 在游戏初始化时显示开场画面（如果是第一次玩）
+        function checkShowOpening() {
+            const saved = localStorage.getItem('xiaoh_game');
+            if (!saved) {
+                // 第一次玩，显示开场
+                setTimeout(showOpeningScene, 1000);
+            }
+        }
+
+        // 覆盖startGameInitialization以添加开场逻辑
+        const originalStartGameInitialization = startGameInitialization;
+        startGameInitialization = function() {
+            if (isGameReady) return;
+            isGameReady = true;
+
+            loadGame();
+            updateTrashBtn();
+            startMushroomSpawning();
+            setBackgroundByTime();
+            initBGM();
+            startXiaohIdleAnim();
+
+            setTimeout(() => {
+                hideLoadingScreen();
+                checkShowOpening();
+            }, 300);
+        };
 
         initPreload();
 
