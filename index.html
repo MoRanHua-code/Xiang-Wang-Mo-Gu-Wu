@@ -2328,7 +2328,7 @@
                 <!-- 道具 - 风车 (20) -->
                 <div class="shop-item" data-item="windmill">
                     <div class="shop-item-image">
-                        <img src="assets/道具/风车png.png" alt="风车">
+                        <img src="assets/道具/风车.png" alt="风车">
                     </div>
                     <div class="shop-item-info">
                         <div class="shop-item-name">风车</div>
@@ -2426,23 +2426,31 @@
             market: { name: '集市', emoji: '🏪', bg: 'linear-gradient(180deg, #FFCDD2 0%, #EF9A9A 100%)' }
         };
 
+        // 普通风景明信片（一般情况下获得）
+        const NORMAL_POSTCARDS = [
+            { text: '白鹅游过来了 / 我冲它叫 / 它不理我 / 走了 / 那棵树下有人在做饭 / 香得我尾巴停不下来\n何老师：H，你把白鹅当同类了吧。', image: 'assets/明信片素材/合岭村.png', name: '合岭村', location: 'field' },
+            { text: '水是什么味道 / 我舔了一口 / 咸的 / 湖里怎么没有鱼 / 那只熊猫为什么不跟我玩 / 它是不是装忙\n何老师：别舔，这是矿泉水。', image: 'assets/明信片素材/九塞沟.png', name: '九寨沟', location: 'river' },
+            { text: '大象好大 / 是很大的狗吗 / 不敢上前 / 河边有莲花 / 可以吃吗 / 闻起来不像肉\n黄老师：小h是个小吃货。', image: 'assets/明信片素材/曼远村.png', name: '曼远村', location: 'neighbor' },
+            { text: '好多人\n花好红\n我坐在花旁边\n大家都在拍照\n这个地方好大好亮\n何老师：小H，你也是这儿的游客呢。', image: 'assets/明信片素材/天安门.png', name: '天安门', location: 'market' },
+            { text: '好长的路\n我跑了好久\n风把云都吹散了\n远处的山叠在一起\n我想趴在这里看一会儿\n何老师：小H第一次看到这么远的风景吧。。', image: 'assets/明信片素材/长城.png', name: '长城', location: 'field' }
+        ];
+
+        // 稀有明信片（需要携带特殊道具才能获得）
+        const RARE_POSTCARDS = [
+            { text: '他们在笑什么啊？反正跟着笑就对了~ 太阳好暖，腿有点麻了但不想动', image: 'assets/明信片素材/01.png', name: '春日聚会', rarity: 'rare' },
+            { text: '跑起来跑起来！草的味道好多，前面那个是我的同类吧？走走走去认识一下！', image: 'assets/明信片素材/02.png', name: '森林小道', rarity: 'rare' },
+            { text: '这个姐姐身上好香，是肉的味道！抱紧一点可以吗？饭能不能别吃那么久啊', image: 'assets/明信片素材/03.png', name: '村舍午餐时光', rarity: 'rare' },
+            { text: '他们的手都好温柔，一直摸我脑袋。头都快被摸秃了，但是好舒服不想躲', image: 'assets/明信片素材/04.png', name: '温馨家庭合影', rarity: 'rare' },
+            { text: '我就这样坐着，风里有饭香味。有人趴着不吃了，那我帮他吃掉？', image: 'assets/明信片素材/05.png', name: '乡村聚餐', rarity: 'rare' },
+            { text: '又拍？抱这么紧我怎么跑！不过他身上有橘子味，再待一会儿也行', image: 'assets/明信片素材/06.png', name: '乡村暖意合影', rarity: 'rare' }
+        ];
+
+        // 旧的POSTCARDS结构（保持兼容）
         const POSTCARDS = {
-            field: [
-                { text: '他们在笑什么啊？反正跟着笑就对了~ 太阳好暖，腿有点麻了但不想动', image: 'assets/明信片素材/01.png', name: '春日聚会' },
-                { text: '跑起来跑起来！草的味道好多，前面那个是我的同类吧？走走走去认识一下！', image: 'assets/明信片素材/02.png', name: '森林小道' }
-            ],
-            river: [
-                { text: '这个姐姐身上好香，是肉的味道！抱紧一点可以吗？饭能不能别吃那么久啊', image: 'assets/明信片素材/03.png', name: '村舍午餐时光' },
-                { text: '他们的手都好温柔，一直摸我脑袋。头都快被摸秃了，但是好舒服不想躲', image: 'assets/明信片素材/04.png', name: '温馨家庭合影' }
-            ],
-            neighbor: [
-                { text: '我就这样坐着，风里有饭香味。有人趴着不吃了，那我帮他吃掉？', image: 'assets/明信片素材/05.png', name: '乡村聚餐' },
-                { text: '又拍？抱这么紧我怎么跑！不过他身上有橘子味，再待一会儿也行', image: 'assets/明信片素材/06.png', name: '乡村暖意合影' }
-            ],
-            market: [
-                { text: '太阳好暖，跟着笑就对了~', image: 'assets/明信片素材/01.png', name: '春日聚会' },
-                { text: '跑起来！前面那个是我的同类吧！', image: 'assets/明信片素材/02.png', name: '森林小道' }
-            ]
+            field: NORMAL_POSTCARDS.filter(p => p.location === 'field' || !p.location),
+            river: NORMAL_POSTCARDS.filter(p => p.location === 'river' || !p.location),
+            neighbor: NORMAL_POSTCARDS.filter(p => p.location === 'neighbor' || !p.location),
+            market: NORMAL_POSTCARDS.filter(p => p.location === 'market' || !p.location)
         };
         
         const GUEST_COMMENTS = [
@@ -2454,23 +2462,68 @@
             '彭小哥："小H这么乖，等下陪你玩。"'
         ];
 
+        // 互动文案
+        const INTERACT_TEXT = {
+            pet: [
+                '被摸了摸头，何老师也是这样哄我的~ 心情值+2',
+                '耳朵被揉了揉，舒服得直哼哼，跟黄老师揉我的时候一样。心情值+2',
+                '摸摸头！想起了何老师叫我小乖乖的时候~ 心情值+2',
+                '翻了个肚皮，跟彭彭刚来那天一样，忍不住嘛。心情值+2',
+                '有人轻轻拍了拍我，尾巴自己就摇起来了——蘑菇屋就是这么暖。心情值+2'
+            ],
+            play: [
+                '在院子里玩接球！彭彭又把球扔到屋顶上了…… 心情值+3',
+                '追蝴蝶追得比彭彭还快！他追不上我~ 心情值+3',
+                '何老师拿玉米逗我，追着玉米跑了三圈——掰玉米任务白干了。心情值+3',
+                '和嘉宾一起在草坪上撒欢，镜头都追不上我！心情值+3',
+                '在水库边扔石子玩，我以为是让我捡回来……扑通。心情值+3'
+            ],
+            feed: {
+                bone: [
+                    '黄老师做饭时偷偷塞给我的，趁热！心情值+2',
+                    '彭彭从桌上偷偷拿给我的，别让黄老师发现~ 心情值+2',
+                    '黄老师说"骨头炖汤了"，不行！我要啃！心情值+2'
+                ],
+                meat: [
+                    '昨晚烤全羊何老师专门给我留的，啃得满嘴油！心情值+3',
+                    '烤全羊的香味我闻着就来了，谁也拦不住我~ 心情值+3',
+                    '彭彭看着我咽口水，但还是让给我了，嘿嘿。心情值+3'
+                ],
+                bento: [
+                    '黄小厨亲手做的便当！跟他们吃的一模一样，我也是蘑菇屋的人~ 心情值+4',
+                    '便当里是黄老师拿手的蛋炒饭，我把碗舔得比洗的还干净。心情值+4',
+                    '何老师帮我把便当掰碎，"慢慢吃别噎着"——好暖。心情值+4'
+                ],
+                steak: [
+                    '嘉宾点的牛排，黄老师帮我切好了一块一块喂我。心情值+4',
+                    '杰哥来的那期点的牛排，他走之前还特意给我留了一块！心情值+4',
+                    '蘑菇屋待客的最高规格！我才是这里的老住户好吧~ 心情值+4'
+                ],
+                sushi: [
+                    '黄老师做的时候我一直蹲在旁边看，何老师说"够了够了你口水滴上去了"。心情值+5',
+                    '这么好看的东西……我可以咬吗？咔嚓——好像不该咬的。不管了！心情值+5',
+                    '他们吃寿司都蘸绿色的酱，我也蘸了一下——辣的！！但是好好吃！解锁新区域。心情值+5'
+                ]
+            }
+        };
+
         // ==================== 商店数据 ====================
         const SHOP_ITEMS = {
             food: [
-                { id: 'bone', name: '骨头', emoji: '🦴', price: 5, desc: '基础食物，去附近逛逛', level: 1, image: 'assets/食物/骨头.png' },
-                { id: 'meat', name: '肉块', emoji: '🍖', price: 15, desc: '美味肉块，跑得更远', level: 2, image: 'assets/食物/肉块.png' },
-                { id: 'steak', name: '牛排', emoji: '🥩', price: 30, desc: '高级牛排，探索远方', level: 3, image: 'assets/食物/牛排.png' },
-                { id: 'sushi', name: '寿司', emoji: '🍣', price: 50, desc: '精致料理，解锁新区域', level: 4, image: 'assets/食物/寿司.png' },
-                { id: 'bento', name: '便当', emoji: '🍱', price: 30, desc: '美味的便当，营养丰富！小H吃饱了才能去更远的地方探险。', level: 3, image: 'assets/食物/便当.png' }
+                { id: 'bone', name: '骨头', emoji: '🦴', price: 5, desc: '黄老师做饭时偷偷塞给我的，趁热啃！可以在蘑菇屋附近溜达。', level: 1, image: 'assets/食物/骨头.png' },
+                { id: 'meat', name: '羊排', emoji: '🍖', price: 15, desc: '昨晚烤全羊何老师专门给我留的！啃得满嘴油~ 跑得更远！', level: 2, image: 'assets/食物/羊排.png' },
+                { id: 'steak', name: '牛排', emoji: '🥩', price: 30, desc: '嘉宾点的牛排，黄老师帮我切好了，一块一块喂的。能去更远的地方！', level: 3, image: 'assets/食物/牛排.png' },
+                { id: 'sushi', name: '寿司', emoji: '🍣', price: 50, desc: '有嘉宾来的时候黄老师才会做的料理！解锁蘑菇屋周边新区域。', level: 4, image: 'assets/食物/寿司.png' },
+                { id: 'bento', name: '便当', emoji: '🍱', price: 30, desc: '黄小厨亲手做的便当，跟他们吃的一模一样！吃饱了去掰玉米的地方探险。', level: 3, image: 'assets/食物/便当.png' }
             ],
             prop: [
-                { id: 'swim_ring', name: '游泳圈', emoji: '🏊', price: 20, desc: '增加去沿海城市的概率', boostDest: ['river'], image: 'assets/道具/游泳圈.png' },
-                { id: 'compass', name: '指南针', emoji: '🧭', price: 35, desc: '增加去新地方的概率', boostDest: ['field', 'river', 'neighbor', 'market'], image: 'assets/道具/指南针.png' },
-                { id: 'ball', name: '玩具球', emoji: '⚽', price: 15, desc: '增加去公园的概率', boostDest: ['field'], image: 'assets/道具/球.png' },
-                { id: 'camera', name: '相机', emoji: '📷', price: 40, desc: '增加获得明信片概率', boostDest: [], image: 'assets/道具/相机.png' },
-                { id: 'windmill', name: '风车', emoji: '🎠', price: 20, desc: '风车玩具，让小H在户外玩耍时更开心！增加去郊外的概率。', image: 'assets/道具/风车png.png' },
-                { id: 'bowl', name: '碗', emoji: '🥣', price: 15, desc: '精致的小碗，可以装食物。小H很喜欢！增加亲密度获取。', image: 'assets/道具/碗.png' },
-                { id: 'collar', name: '项圈', emoji: '🎀', price: 25, desc: '漂亮的项圈，让小H看起来更可爱！增加获得稀有明信片的概率。', image: 'assets/道具/项圈.png' }
+                { id: 'swim_ring', name: '游泳圈', emoji: '🏊', price: 20, desc: '去水库玩要带的！上次杰哥带我下水用的就是这个。增加去河边的概率。', boostDest: ['river'], image: 'assets/道具/游泳圈.png' },
+                { id: 'compass', name: '指南针', emoji: '🧭', price: 35, desc: '他们寻宝任务用的同款指南针！增加去新地方探险的概率。', boostDest: ['field', 'river', 'neighbor', 'market'], image: 'assets/道具/指南针.png' },
+                { id: 'ball', name: '玩具球', emoji: '⚽', price: 15, desc: '彭彭扔给我的球，他每次都扔太远……增加去邻居家的概率。', boostDest: ['field'], image: 'assets/道具/玩具球.png' },
+                { id: 'camera', name: '相机', emoji: '📷', price: 40, desc: '拍照神器！增加获得明信片概率。', boostDest: [], image: 'assets/道具/相机.png' },
+                { id: 'windmill', name: '风车', emoji: '🎠', price: 20, desc: '插在蘑菇屋门口的风车，我一看到就想往外跑！增加去郊外的概率。', image: 'assets/道具/风车.png' },
+                { id: 'bowl', name: '碗', emoji: '🥣', price: 15, desc: '何老师给我买的碗，说"小H也有自己的位置"。增加亲密度获取。', image: 'assets/道具/碗.png' },
+                { id: 'collar', name: '项圈', emoji: '🎀', price: 25, desc: '蘑菇屋定制的项圈，上面刻着"蘑菇屋小H"。增加获得稀有明信片的概率。', image: 'assets/道具/项圈.png' }
             ]
         };
 
@@ -2492,10 +2545,14 @@
                 meat: 0,
                 steak: 0,
                 sushi: 0,
+                bento: 0,
                 swim_ring: 0,
                 compass: 0,
                 ball: 0,
-                camera: 0
+                camera: 0,
+                windmill: 0,
+                bowl: 0,
+                collar: 0
             }
         };
 
@@ -3454,6 +3511,7 @@
             // 判断来源页面（检查哪个页面当前显示）
             const isInRoom = el.roomPage.classList.contains('active');
             gameState.previousPage = isInRoom ? 'room' : 'home';
+            gameState.fromInventory = true; // 记录是从物品栏去的商店
             // 隐藏当前页面，显示商店页面
             if (isInRoom) {
                 el.roomPage.style.display = 'none';
@@ -3503,28 +3561,28 @@
 
         // 商品数据
         const SHOP_GOODS = {
-            windmill: { name: '风车', price: 20, type: 'prop', inventoryId: 'windmill', 
-                       desc: '风车玩具，让小H在户外玩耍时更开心！增加去郊外的概率。' },
-            bowl: { name: '碗', price: 15, type: 'prop', inventoryId: 'bowl', 
-                   desc: '精致的小碗，可以装食物。小H很喜欢！增加亲密度获取。' },
-            collar: { name: '项圈', price: 25, type: 'prop', inventoryId: 'collar', 
-                     desc: '漂亮的项圈，让小H看起来更可爱！增加获得稀有明信片的概率。' },
-            bento: { name: '便当', price: 30, type: 'food', inventoryId: 'bento', 
-                    desc: '美味的便当，营养丰富！小H吃饱了才能去更远的地方探险。' },
             bone: { name: '骨头', price: 5, type: 'food', inventoryId: 'bone', 
-                   desc: '基础食物，小H的最爱！可以去附近逛逛。' },
+                   desc: '黄老师做饭时偷偷塞给我的，趁热啃！可以在蘑菇屋附近溜达。' },
             meat: { name: '羊排', price: 15, type: 'food', inventoryId: 'meat', 
-                   desc: '鲜嫩羊排，营养丰富！小H可以跑得更远。' },
+                   desc: '昨晚烤全羊何老师专门给我留的！啃得满嘴油~ 跑得更远！' },
+            bento: { name: '便当', price: 30, type: 'food', inventoryId: 'bento', 
+                    desc: '黄小厨亲手做的便当，跟他们吃的一模一样！吃饱了去掰玉米的地方探险。' },
             steak: { name: '牛排', price: 30, type: 'food', inventoryId: 'steak', 
-                    desc: '高级牛排，肉质鲜嫩！小H可以探索远方。' },
+                    desc: '嘉宾点的牛排，黄老师帮我切好了，一块一块喂的。能去更远的地方！' },
             sushi: { name: '寿司', price: 50, type: 'food', inventoryId: 'sushi', 
-                    desc: '精致料理，美味无比！解锁新区域必备。' },
+                    desc: '有嘉宾来的时候黄老师才会做的料理！解锁蘑菇屋周边新区域。' },
             ball: { name: '玩具球', price: 15, type: 'prop', inventoryId: 'ball', 
-                   desc: '彩色玩具球，小H的最爱！增加去公园的概率。' },
+                   desc: '彭彭扔给我的球，他每次都扔太远……增加去邻居家的概率。' },
+            bowl: { name: '碗', price: 15, type: 'prop', inventoryId: 'bowl', 
+                   desc: '何老师给我买的碗，说"小H也有自己的位置"。增加亲密度获取。' },
             swim_ring: { name: '游泳圈', price: 20, type: 'prop', inventoryId: 'swim_ring', 
-                        desc: '漂亮的游泳圈！增加去河边的概率。' },
+                        desc: '去水库玩要带的！上次杰哥带我下水用的就是这个。增加去河边的概率。' },
+            windmill: { name: '风车', price: 20, type: 'prop', inventoryId: 'windmill', 
+                       desc: '插在蘑菇屋门口的风车，我一看到就想往外跑！增加去郊外的概率。' },
+            collar: { name: '项圈', price: 25, type: 'prop', inventoryId: 'collar', 
+                     desc: '蘑菇屋定制的项圈，上面刻着"蘑菇屋小H"。增加获得稀有明信片的概率。' },
             compass: { name: '指南针', price: 35, type: 'prop', inventoryId: 'compass', 
-                      desc: '古老的指南针！增加去新地方探险的概率。' }
+                      desc: '他们寻宝任务用的同款指南针！增加去新地方探险的概率。' }
         };
         
         let selectedShopItem = null;
@@ -3796,6 +3854,12 @@
                 const bgClass = homePage.classList.contains('day') ? 'home-day' : 'home-night';
                 updateFullscreenBg(bgClass);
             }
+            // 如果是从物品栏去的商店，返回后重新显示物品栏
+            if (gameState.fromInventory) {
+                el.inventoryModal.classList.add('active');
+                renderInventory(); // 重新渲染物品栏以显示新购买的物品
+                gameState.fromInventory = false; // 重置状态
+            }
         });
 
         // ==================== 目的地选择逻辑 ====================
@@ -3903,9 +3967,38 @@
                 reward = randomInt(baseReward, baseReward + 10);
             }
 
-            // 选择明信片
-            const postcards = POSTCARDS[destKey] || POSTCARDS.field;
-            const postcard = randomChoice(postcards);
+            // 选择明信片（根据携带的道具决定）
+            let postcard;
+            const hasCollar = gameState.inventory.collar && gameState.inventory.collar > 0;
+            const hasCamera = gameState.inventory.camera && gameState.inventory.camera > 0;
+            
+            // 判断是否获得稀有明信片
+            // 携带项圈：30%概率获得稀有明信片
+            // 携带相机：20%概率获得稀有明信片
+            // 同时携带：50%概率获得稀有明信片
+            let rareChance = 0;
+            if (hasCollar && hasCamera) {
+                rareChance = 50; // 同时携带项圈和相机，50%概率
+            } else if (hasCollar) {
+                rareChance = 30; // 只携带项圈，30%概率
+            } else if (hasCamera) {
+                rareChance = 20; // 只携带相机，20%概率
+            }
+            
+            // 根据概率选择明信片
+            if (rareChance > 0 && Math.random() * 100 < rareChance) {
+                // 获得稀有明信片
+                postcard = randomChoice(RARE_POSTCARDS);
+            } else {
+                // 获得普通风景明信片
+                // 根据目的地选择对应的明信片
+                const locationPostcards = NORMAL_POSTCARDS.filter(p => p.location === destKey);
+                if (locationPostcards.length > 0) {
+                    postcard = randomChoice(locationPostcards);
+                } else {
+                    postcard = randomChoice(NORMAL_POSTCARDS);
+                }
+            }
 
             // 选择嘉宾评论
             const guestComment = randomChoice(GUEST_COMMENTS);
@@ -4137,7 +4230,8 @@
             const hasFood = gameState.inventory.bone > 0 || 
                            gameState.inventory.meat > 0 || 
                            gameState.inventory.steak > 0 || 
-                           gameState.inventory.sushi > 0;
+                           gameState.inventory.sushi > 0 ||
+                           gameState.inventory.bento > 0;
             
             if (!hasFood) {
                 addDiary('feed', '今天主人没有给我准备食物...有点饿呢 😢');
@@ -4148,19 +4242,23 @@
             if (gameState.inventory.sushi > 0) {
                 gameState.inventory.sushi--;
                 gameState.intimacy += 5;
-                addDiary('feed', '今天吃到了美味的寿司！超级满足！🍣 心情值+5');
+                addDiary('feed', randomChoice(INTERACT_TEXT.feed.sushi));
             } else if (gameState.inventory.steak > 0) {
                 gameState.inventory.steak--;
                 gameState.intimacy += 4;
-                addDiary('feed', '鲜嫩的牛排！好好吃！🥩 心情值+4');
+                addDiary('feed', randomChoice(INTERACT_TEXT.feed.steak));
+            } else if (gameState.inventory.bento > 0) {
+                gameState.inventory.bento--;
+                gameState.intimacy += 4;
+                addDiary('feed', randomChoice(INTERACT_TEXT.feed.bento));
             } else if (gameState.inventory.meat > 0) {
                 gameState.inventory.meat--;
                 gameState.intimacy += 3;
-                addDiary('feed', '香喷喷的肉干！谢谢主人！🍖 心情值+3');
+                addDiary('feed', randomChoice(INTERACT_TEXT.feed.meat));
             } else if (gameState.inventory.bone > 0) {
                 gameState.inventory.bone--;
                 gameState.intimacy += 2;
-                addDiary('feed', '啃骨头真开心！🦴 心情值+2');
+                addDiary('feed', randomChoice(INTERACT_TEXT.feed.bone));
             }
             
             updateIntimacyDisplay();
@@ -4172,7 +4270,7 @@
         el.actionPet.addEventListener('click', () => {
             playClickSound();
             gameState.intimacy += 2;
-            addDiary('pet', '主人摸了摸我的头，好舒服呀~ 🥰 心情值+2');
+            addDiary('pet', randomChoice(INTERACT_TEXT.pet));
             updateIntimacyDisplay();
             animateXiaoh('pet');
             saveGame();
@@ -4182,7 +4280,7 @@
         el.actionPlay.addEventListener('click', () => {
             playClickSound();
             gameState.intimacy += 3;
-            addDiary('play', '和主人一起玩耍真开心！我们玩了接球游戏！🎾 心情值+3');
+            addDiary('play', randomChoice(INTERACT_TEXT.play));
             updateIntimacyDisplay();
             animateXiaoh('play');
             saveGame();
