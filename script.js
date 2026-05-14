@@ -1817,10 +1817,10 @@
 
             showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '欢迎回家！🍄 +' + trip.reward);
 
-            // 如果是教程模式下领取奖励，继续下一步教程
+            // 如果是教程模式下领取奖励，继续步骤6的教程
             if (tutorialStarted && !gameState.tutorialCompleted) {
                 setTimeout(() => {
-                    showTutorialStep(6); // 直接进入步骤7（索引6）
+                    showTutorialStep(5); // 先显示步骤6（索引5）的对话
                 }, 1500);
             }
         });
@@ -2567,9 +2567,10 @@
                 dialogs: [
                     { speaker: '小H', text: '骨头5个蘑菇，羊排15个，便当30个……' },
                     { speaker: '小H', text: '带不同的吃的出门，我会去不同的地方。带好的我就跑远点，带一般的就在附近转转。' },
-                    { speaker: '小H', text: '你自己看着买吧~' }
+                    { speaker: '小H', text: '你自己看着买吧~' },
+                    { speaker: '旁白', text: '💡 点击右下角蘑菇商店按钮进入商店' }
                 ],
-                guide: { type: 'button', target: '#shop-btn', arrow: 'up' },
+                guide: null,
                 trigger: 'open_shop'
             },
             {
@@ -2579,10 +2580,10 @@
                     { speaker: '小H', text: '你……你不摸摸我吗？' },
                     { speaker: '何老师', text: '小H最喜欢被摸头了，你试试~' },
                     { speaker: '小H', text: '何老师每次来都摸我头，超舒服的。' },
-                    { speaker: '旁白', text: '💡 点击小H进入互动界面，先点击【摸摸】，再点击【喂食】' }
+                    { speaker: '旁白', text: '💡 点击中间的小H进入互动界面，先点击【摸摸】，再点击【喂食】' }
                 ],
                 guide: null,
-                trigger: 'interact_feed'
+                trigger: 'close_interact'
             },
             {
                 step: 5,
@@ -2591,15 +2592,18 @@
                     { speaker: '小H', text: '吃饱了我想出去溜达！' },
                     { speaker: '小H', text: '外面可好玩了，有水库、有玉米地、还有彩灯。' },
                     { speaker: '小H', text: '等我给你寄明信片！' },
-                    { speaker: '旁白', text: '💡 点击【探险】按钮，选择食物后点击出发' }
+                    { speaker: '旁白', text: '💡 点击左下角【探险】按钮，选择食物后点击出发' }
                 ],
-                guide: { type: 'button', target: '#go-btn', arrow: 'up' },
+                guide: null,
                 trigger: 'xiaoh_leave'
             },
             {
                 step: 6,
                 title: '收到明信片',
-                dialogs: [],
+                dialogs: [
+                    { speaker: '小H', text: '汪！我回来了！' },
+                    { speaker: '小H', text: '明信片收到了吗？好看吧？' }
+                ],
                 guide: null,
                 autoNext: true
             },
@@ -2807,12 +2811,9 @@
                     // 监听商店按钮点击
                     el.shopBtn.addEventListener('click', onOpenShopTrigger);
                     break;
-                case 'interact_feed':
-                    // 监听喂食按钮点击（先摸摸再喂食）
-                    const actionFeed = document.getElementById('action-feed');
-                    if (actionFeed) {
-                        actionFeed.addEventListener('click', onInteractFeedTrigger);
-                    }
+                case 'close_interact':
+                    // 监听互动界面返回按钮点击
+                    el.interactBack.addEventListener('click', onCloseInteractTrigger);
                     break;
                 case 'xiaoh_leave':
                     // 监听小H出发（在confirmGo按钮点击时触发）
@@ -2835,11 +2836,8 @@
                 case 'open_shop':
                     el.shopBtn.removeEventListener('click', onOpenShopTrigger);
                     break;
-                case 'interact_feed':
-                    const actionFeed = document.getElementById('action-feed');
-                    if (actionFeed) {
-                        actionFeed.removeEventListener('click', onInteractFeedTrigger);
-                    }
+                case 'close_interact':
+                    el.interactBack.removeEventListener('click', onCloseInteractTrigger);
                     break;
                 case 'xiaoh_leave':
                     el.confirmGo.removeEventListener('click', onXiaohLeaveTrigger);
@@ -2864,11 +2862,10 @@
             // 不立即进入下一步，等待用户从商店返回后再继续（在商店返回按钮中处理）
         }
 
-        function onInteractFeedTrigger() {
-            clearTrigger('interact_feed');
+        function onCloseInteractTrigger() {
+            clearTrigger('close_interact');
             hideGuide();
-            showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '嘎嘣嘎嘣……嗯嗯嗯……好吃！何老师说的对，骨头就该趁热啃！');
-            setTimeout(nextTutorialStep, 2000);
+            nextTutorialStep();
         }
 
         function onXiaohLeaveTrigger() {
