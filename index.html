@@ -2017,7 +2017,7 @@
 
         .tutorial-sprite.he {
             left: 5%;
-            width: 120px;
+            width: 225px;
             transform-origin: bottom center;
         }
 
@@ -5254,9 +5254,9 @@
                 dialogs: [
                     { speaker: '小H', text: '看见那些蘑菇了吗？' },
                     { speaker: '小H', text: '这是蘑菇屋的"钱"，捡了就能去商店换好吃的。何老师管这叫"货币"，我管这叫"好吃的通行证"。' },
-                    { speaker: '旁白', text: '💡 点击高亮框住的蘑菇来收集' }
+                    { speaker: '旁白', text: '💡 点击任意蘑菇来收集' }
                 ],
-                guide: { type: 'highlight', target: '.mushroom:first-child', arrow: 'down' },
+                guide: null,
                 trigger: 'collect_mushroom'
             },
             {
@@ -5279,7 +5279,7 @@
                     { speaker: '小H', text: '何老师每次来都摸我头，超舒服的。' },
                     { speaker: '旁白', text: '💡 点击小H进入互动界面，先点击【摸摸】，再点击【喂食】' }
                 ],
-                guide: { type: 'button', target: '#xiaoh-character', arrow: 'up' },
+                guide: null,
                 trigger: 'interact_feed'
             },
             {
