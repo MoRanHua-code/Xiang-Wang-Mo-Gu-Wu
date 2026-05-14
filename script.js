@@ -647,6 +647,7 @@
             stopXiaohRunAnim();
             stopXiaohPlayBallAnim();
             resetXiaohRunPosition();
+            startInteractXiaohIdleAnim();
         }
 
         function xiaohEatFrameSrc(index) {
