@@ -2327,3 +2327,43 @@
         .complete-btn:hover {
             transform: scale(1.05);
         }
+
+/* 庭院 - 小H快跑按钮（放在探险按钮上面） */
+#run-btn {
+    position: absolute;
+    bottom: 15%;        /* 从 8% 改成 15%，往上移 */
+    left: 20px;         /* 和探险按钮左对齐 */
+    width: 100px;
+    height: 45px;
+    background: linear-gradient(180deg, #FFD93D 0%, #F6AD55 100%);
+    border: none;
+    border-radius: 20px;
+    color: #5D3A1A;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
+    z-index: 100;
+    transition: all 0.2s;
+}
+#run-btn:active { transform: scale(0.95); }
+
+/* 屋子内 - 小H快跑按钮（同样放在探险按钮上面） */
+#room-run-btn {
+    position: absolute;
+    bottom: 15%;        /* 从 8% 改成 15% */
+    left: 20px;         /* 和探险按钮左对齐 */
+    width: 100px;
+    height: 45px;
+    background: linear-gradient(180deg, #FFD93D 0%, #F6AD55 100%);
+    border: none;
+    border-radius: 20px;
+    color: #5D3A1A;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
+    z-index: 100;
+    transition: all 0.2s;
+}
+#room-run-btn:active { transform: scale(0.95); }

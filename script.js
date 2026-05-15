@@ -135,7 +135,8 @@
                 collar: 0
             },
             tutorialStep: 0, // 教程步骤
-            tutorialCompleted: false // 是否完成教程
+            tutorialCompleted: false, // 是否完成教程
+            isTraveling: false // 小H是否在旅行中（锁定快跑按钮）
         };
 
         // ==================== 音效系统 ====================
@@ -376,7 +377,11 @@
             tutorialArrow: document.getElementById('tutorial-arrow'),
             tutorialHighlight: document.getElementById('tutorial-highlight'),
             tutorialComplete: document.getElementById('tutorial-complete'),
-            completeBtn: document.getElementById('complete-btn')
+            completeBtn: document.getElementById('complete-btn'),
+
+            //小H快跑
+            runBtn: document.getElementById('run-btn'),
+            roomRunBtn: document.getElementById('room-run-btn')
         };
 
         // ==================== 工具函数 ====================
@@ -647,7 +652,6 @@
             stopXiaohRunAnim();
             stopXiaohPlayBallAnim();
             resetXiaohRunPosition();
-            startInteractXiaohIdleAnim();
         }
 
         function xiaohEatFrameSrc(index) {
@@ -1709,6 +1713,7 @@
 
             // 更新状态
             gameState.xiaohStatus = 'away';
+            gameState.isTraveling = true; // 旅行中，锁定快跑按钮
             
             // 同时更新庭院和屋子的探险按钮
             el.goBtn.disabled = true;
@@ -1792,6 +1797,9 @@
                 date: new Date().toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
             };
             gameState.album.push(albumItem);
+
+            // 旅行结束，解锁快跑按钮
+            gameState.isTraveling = false;
 
             // 保存到localStorage
             saveGame();
@@ -2216,7 +2224,10 @@
                 trash: gameState.trash,
                 inventory: gameState.inventory,
                 intimacy: gameState.intimacy,
-                diary: gameState.diary
+                diary: gameState.diary,
+                tutorialCompleted: gameState.tutorialCompleted,  // ← 添加
+                tutorialStep: gameState.tutorialStep,  // ← 添加
+                isTraveling: gameState.isTraveling  // 保存旅行状态
             }));
         }
 
@@ -2240,6 +2251,15 @@
                 };
                 gameState.intimacy = parseInt(data.intimacy || 0, 10) || 0;
                 gameState.diary = data.diary || [];
+                gameState.isTraveling = data.isTraveling || false;
+
+                console.log('[loadGame] 解析存档:', data);
+                console.log('[loadGame] tutorialCompleted 原始值:', data.tutorialCompleted, '类型:', typeof data.tutorialCompleted);
+
+                gameState.tutorialCompleted = data.tutorialCompleted === true;
+                gameState.tutorialStep = data.tutorialStep || 0;
+
+                console.log('[loadGame] 赋值后 gameState.tutorialCompleted:', gameState.tutorialCompleted);
                 updateMushroomDisplay();
             }
         }
@@ -2426,19 +2446,110 @@
             }
         }
 
-        function startGameInitialization() {
+        startGameInitialization = function() {
             if (isGameReady) return;
             isGameReady = true;
 
+            // 1. 先加载存档（这步最关键！）
             loadGame();
+
             updateTrashBtn();
             startMushroomSpawning();
             setBackgroundByTime();
             initBGM();
             startXiaohIdleAnim();
 
-            setTimeout(hideLoadingScreen, 300);
+            setTimeout(() => {
+                hideLoadingScreen();
+                // 2. 加载完成后再检查是否显示开场
+                checkShowOpening();
+            }, 300);
+        };
+        // 更新小H快跑按钮状态
+        function updateRunBtnState() {
+            const isLocked = !canAccessMiniGame();
+            console.log(`[按钮状态] 小游戏按钮锁定=${isLocked}`);
+            const btns = [el.runBtn, el.roomRunBtn];
+            btns.forEach(btn => {
+                if (!btn) {
+                    console.log('[按钮状态] 按钮元素不存在');
+                    return;
+                }
+                if (isLocked) {
+                    btn.style.opacity = '0.5';
+                    btn.style.cursor = 'not-allowed';
+                    btn.textContent = '🔒 小H快跑';
+                    console.log('[按钮状态] 已设为锁定样式');
+                } else {
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                    btn.textContent = '🏃 小H快跑';
+                    console.log('[按钮状态] 已设为解锁样式');
+                }
+            });
         }
+
+
+// ===== 在主游戏页面加载时执行 =====
+// ===== 检查小游戏蘑菇奖励（在 loadGame 后调用）=====
+function checkMushroomReward() {
+    const lastReward = localStorage.getItem('lastMushroomReward');
+    const totalReward = localStorage.getItem('mushroomReward');
+
+    if (lastReward && lastReward !== '0') {
+        const count = parseInt(lastReward);
+        const total = parseInt(totalReward || '0');
+
+        showMushroomToast(`🍄 小H快跑获得 ${count} 个蘑菇！累计: ${total} 个`);
+
+        gameState.mushrooms += count;
+        updateMushroomDisplay();
+        saveGame();
+
+        localStorage.removeItem('lastMushroomReward');
+    }
+}
+
+function showMushroomToast(message) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, #FF6B6B, #EE5A5A);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-family: 'Courier New', monospace;
+        font-size: 1.2em;
+        font-weight: bold;
+        border: 3px solid #8B4513;
+        box-shadow: 0 4px 0 #8B4513;
+        z-index: 1000;
+        animation: bounce 0.6s ease-in-out infinite alternate;
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // 3秒后消失
+    setTimeout(() => {
+        toast.style.transition = 'opacity 0.5s';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+
+
+
+        // 在 startGameInitialization 末尾调用
+        updateRunBtnState();
+        
+        // 如果存档中显示正在旅行，恢复锁定状态
+        if (gameState.isTraveling) {
+            console.log('[游戏初始化] 检测到旅行状态，锁定快跑按钮');
+        }
+        console.log('[游戏初始化] 教程完成状态:', gameState.tutorialCompleted, '存档:', localStorage.getItem('xiaoh_game'));
 
         function preloadImage(src) {
             return new Promise((resolve) => {
@@ -2629,6 +2740,11 @@
         let tutorialStarted = false;
 
         function showOpeningScene() {
+            // 如果已经完成教程，绝不显示开场
+            if (gameState.tutorialCompleted === true) {
+                console.log('[开场] 教程已完成，阻止显示开场画面');
+                return;
+            }
             el.openingScene.style.display = 'flex';
             el.loadingScreen.style.display = 'none';
         }
@@ -2639,6 +2755,11 @@
         }
 
         function startTutorial() {
+            // 如果已经完成教程，不再启动
+            if (gameState.tutorialCompleted === true) {
+                console.log('[教程] 已完成，跳过');
+                return;
+            }
             tutorialStarted = true;
             currentTutorialStep = 0;
             currentDialogIndex = 0;
@@ -2896,12 +3017,65 @@
 
             // 显示完成弹窗
             el.tutorialComplete.classList.add('active');
+
+            // 解锁小H快跑按钮
+            updateRunBtnState();
+            console.log('[教程完成] 已解锁小H快跑按钮');
         }
+
+
+// 显示小H快跑解锁提示（在教程完成弹窗关闭后调用）
+function showRunGameUnlockToast() {
+    const toast = document.createElement('div');
+    toast.id = 'run-unlock-toast';
+    toast.style.cssText = `
+        position: fixed;
+        top: 15%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, #FFD700, #FFA500);
+        color: #8B4513;
+        padding: 15px 25px;
+        border-radius: 12px;
+        font-family: 'Courier New', monospace;
+        font-size: 1.1em;
+        font-weight: bold;
+        border: 3px solid #8B4513;
+        box-shadow: 0 4px 0 #8B4513, 0 8px 20px rgba(0,0,0,0.3);
+        z-index: 1000;
+        text-align: center;
+        animation: bounce 0.6s ease-in-out infinite alternate;
+        max-width: 80%;
+    `;
+    toast.innerHTML = `
+        <div style="font-size: 1.5em; margin-bottom: 5px;">🏃‍♂️🐕</div>
+        <div>小H快跑已解锁！</div>
+        <div style="font-size: 0.85em; margin-top: 5px; color: #666;">快去庭院右下角体验吧~</div>
+    `;
+    document.body.appendChild(toast);
+
+    // 3秒后自动消失
+    setTimeout(() => {
+        toast.style.transition = 'opacity 0.5s, transform 0.5s';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(-20px)';
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+
+
+
 
         // 教程完成按钮点击
         el.completeBtn.addEventListener('click', () => {
             playClickSound();
             el.tutorialComplete.classList.remove('active');
+            updateRunBtnState();  // ← 保险：确保按钮状态更新
+
+            // 显示小H快跑解锁提示
+            setTimeout(() => {
+                showRunGameUnlockToast();
+            }, 300);  // 稍微延迟，等弹窗完全关闭
         });
 
         // 开场开始按钮
@@ -2911,13 +3085,34 @@
         });
 
         // 在游戏初始化时显示开场画面（如果是第一次玩）
-        function checkShowOpening() {
-            const saved = localStorage.getItem('xiaoh_game');
-            if (!saved) {
-                // 第一次玩，显示开场
-                setTimeout(showOpeningScene, 1000);
-            }
+function checkShowOpening() {
+    const saved = localStorage.getItem('xiaoh_game');
+
+    // 默认隐藏开场
+    el.openingScene.style.display = 'none';
+
+    if (!saved) {
+        console.log('[开场检查] 无存档，显示开场');
+        setTimeout(showOpeningScene, 1000);
+        return;
+    }
+
+    try {
+        const data = JSON.parse(saved);
+        console.log('[开场检查] 存档 tutorialCompleted:', data.tutorialCompleted);
+
+        if (data.tutorialCompleted === true) {
+            gameState.tutorialCompleted = true;
+            console.log('[开场检查] 教程已完成，跳过开场');
+            return;
         }
+    } catch (e) {
+        console.log('[开场检查] 存档解析失败', e);
+    }
+
+    console.log('[开场检查] 教程未完成，显示开场');
+    setTimeout(showOpeningScene, 1000);
+}
 
         // 覆盖startGameInitialization以添加开场逻辑
         const originalStartGameInitialization = startGameInitialization;
@@ -2925,8 +3120,8 @@
             if (isGameReady) return;
             isGameReady = true;
 
-            loadGame();
-            updateTrashBtn();
+            loadGame();  // ← 先加载存档
+            checkMushroomReward();  // ← 再检查蘑菇奖励（此时 gameState 已加载）
             startMushroomSpawning();
             setBackgroundByTime();
             initBGM();
@@ -2937,6 +3132,89 @@
                 checkShowOpening();
             }, 300);
         };
+
+
+        // 小H快跑 - 跳转到小游戏
+        // 小H快跑 - 跳转到小游戏（未完成教程前禁止）
+        function canAccessMiniGame() {
+            const saved = localStorage.getItem('xiaoh_game');
+            if (!saved) {
+                console.log('[教程检查] 无存档，未解锁小游戏');
+                return false;
+            }
+            try {
+                const data = JSON.parse(saved);
+                const completed = data.tutorialCompleted === true;
+                console.log(`[教程检查] tutorialCompleted=${completed}`, data);
+                return completed;
+            } catch (e) {
+                console.log('[教程检查] 存档解析失败', e);
+                return false;
+            }
+        }
+
+        function goToMiniGame() {
+            window.location.assign('littlegame/小H快跑.html');
+        }
+
+        // 旅行中点击小H快跑的锁定弹窗
+        function showTravelLockModal() {
+            let modal = document.getElementById('travel-lock-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'travel-lock-modal';
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content" style="text-align: center; padding: 30px 20px;">
+                        <div style="font-size: 60px; margin-bottom: 15px;">🏃‍♂️💨</div>
+                        <div style="font-size: 18px; color: #5a4a3a; margin-bottom: 10px; font-weight: bold;">
+                            小H旅行去了
+                        </div>
+                        <div style="font-size: 14px; color: #8a7a6a; margin-bottom: 25px;">
+                            请等小H回来后再一起玩吧~
+                        </div>
+                        <button class="modal-btn primary" onclick="document.getElementById('travel-lock-modal').classList.remove('active')" 
+                            style="min-width: 120px; padding: 12px 24px; font-size: 16px;">
+                            知道了
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            modal.classList.add('active');
+        }
+
+        function showTutorialLockMessage() {
+            showMessage('先完成新手教程才能去小H快跑哦！');
+        }
+
+        el.runBtn.addEventListener('click', () => {
+            playClickSound();
+            if (gameState.isTraveling) {
+                showTravelLockModal();
+                return;
+            }
+            if (canAccessMiniGame()) {
+                goToMiniGame();
+            } else {
+                showTutorialLockMessage();
+            }
+        });
+
+        el.roomRunBtn.addEventListener('click', () => {
+            playClickSound();
+            if (gameState.isTraveling) {
+                showTravelLockModal();
+                return;
+            }
+            if (canAccessMiniGame()) {
+                goToMiniGame();
+            } else {
+                showTutorialLockMessage();
+            }
+        });
+        // 小H快跑 - 跳转到小游戏
+
 
         initPreload();
 
