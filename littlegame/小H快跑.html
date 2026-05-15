@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小H快跑 - 向往的生活</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #87CEEB;
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        #startScreen, #gameOverScreen {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-family: 'Courier New', monospace;
+            z-index: 10;
+        }
+        #gameOverScreen {
+            display: none;
+        }
+        .title {
+            font-size: 2.5em;
+            color: #FFD700;
+            text-shadow: 3px 3px 0 #8B4513, -1px -1px 0 #8B4513;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease-in-out infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        .subtitle {
+            font-size: 1.2em;
+            color: #FFF;
+            margin-bottom: 30px;
+        }
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.3em;
+            background: linear-gradient(180deg, #FF6B6B, #EE5A5A);
+            border: 4px solid #8B4513;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-shadow: 2px 2px 0 #8B4513;
+            box-shadow: 0 4px 0 #8B4513;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #8B4513;
+        }
+        .instructions {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #CCC;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .stats {
+            font-size: 1.5em;
+            margin: 15px 0;
+            color: #FFD700;
+        }
+        .hint {
+            font-size: 1em;
+            color: #AAA;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+
+    <!--    背景音乐-->
+    <!-- 隐藏音频元素，不要 controls -->
+    <audio id="bgm" loop >
+        <source src="music/《西双版纳雨林的灵动之舞》LUCK_地锅鸡.m4a" >
+
+    </audio>
+
+    <!-- 收集音效 -->
+    <audio id="collectSound" preload="auto">
+        <source src="music/collect.mp3" type="audio/mpeg">
+        <!-- 备用格式 -->
+        <source src="music/collect.ogg" type="audio/ogg">
+    </audio>
+
+
+    <button id="pauseBtn" style="position: absolute;
+    top: 10px; right: 10px; z-index: 20;
+    padding: 8px 16px; font-size: 14px; background: rgba(0,0,0,0.5);
+    color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; display: none;">暂停</button>
+
+
+    <div id="startScreen">
+        <div class="title">🐕 小H快跑 🐕</div>
+        <div class="subtitle">向往的生活 · 蘑菇屋大冒险</div>
+        <button class="btn" id="startBtn">开始游戏</button>
+
+        <!-- 新增设置按钮 -->
+        <button class="btn" id="settingsBtn" style="margin-top: 15px; background: linear-gradient(180deg, #4CAF50, #45a049); font-size: 1em; padding: 10px 30px;">⚙️ 设置</button>
+        <button class="btn" id="backToCourtyardBtn" style="margin-top: 15px; background: linear-gradient(180deg, #8B7355, #6B5A3A); font-size: 1em; padding: 10px 30px;">🌳 返回庭院</button>
+        <div class="instructions">
+            👆 点击屏幕上半部分 = 跳跃<br>
+
+               收集风车 +50分<br>
+            🐔 躲避障碍物！
+        </div>
+    </div>>
+    </div>
+
+    <!-- 设置界面 -->
+    <div id="settingsScreen" style="display: none; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); color: white; font-family: 'Courier New', monospace; z-index: 15;">
+        <div class="title">⚙️ 设置</div>
+
+        <div style="margin: 20px 0; text-align: center;">
+            <div style="margin: 15px 0; font-size: 1.2em;">
+                <span>🎵 背景音乐</span>
+                <button id="bgmToggle" class="btn" style="margin-left: 20px; padding: 8px 20px; font-size: 0.9em;">开启</button>
+            </div>
+            <div style="margin: 15px 0; font-size: 1.2em;">
+                <span>🔊 音效</span>
+                <button id="sfxToggle" class="btn" style="margin-left: 20px; padding: 8px 20px; font-size: 0.9em;">开启</button>
+            </div>
+        </div>
+        <button class="btn" id="backBtn" style="margin-top: 30px;">返回</button>
+    </div>
+
+
+    
+    <div id="gameOverScreen">
+        <div class="title">游戏结束</div>
+        <div class="stats" id="finalScore">距离: 0m</div>
+        <div class="stats" id="boneCount">骨头: 0</div>
+        <div class="stats" id="ingredientCount">食材: 0</div>
+        <button class="btn" id="restartBtn">再来一次</button>
+        <div class="hint">点击屏幕或按空格键</div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+        
+        // ===== 画布设置 =====
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        // 获取背景音乐元素 ← 加这行
+        const bgm = document.getElementById('bgm');
+
+        //收集音效
+        const collectSound = document.getElementById('collectSound');
+        // 竖屏9:16比例
+        const GAME_WIDTH = 360;
+        const GAME_HEIGHT = 640;
+        const GROUND_Y = GAME_HEIGHT - 100;
+        
+        let scale = 1;
+        let offsetX = 0;
+        // ===== 音频设置 =====
+        let bgmEnabled = true;   // 背景音乐开关
+        let sfxEnabled = true;   // 音效开关
+        
+        function resizeCanvas() {
+            const windowRatio = window.innerWidth / window.innerHeight;
+            const gameRatio = GAME_WIDTH / GAME_HEIGHT;
+            
+            if (windowRatio > gameRatio) {
+                canvas.height = window.innerHeight;
+                canvas.width = canvas.height * gameRatio;
+            } else {
+                canvas.width = window.innerWidth;
+                canvas.height = canvas.width / gameRatio;
+            }
+            
+            scale = canvas.width / GAME_WIDTH;
+            offsetX = 0;
+            
+            canvas.style.width = canvas.width + 'px';
+            canvas.style.height = canvas.height + 'px';
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // ===== 游戏状态 =====
+        const GameState = { START: 0, PLAYING: 1, PAUSED: 2, GAME_OVER: 3 };
+        let gameState = GameState.START;
+        
+        // ===== 游戏变量 =====
+        let player, obstacles, collectibles, particles;
+        // 添加常量：小H的地面站立Y坐标
+        const PLAYER_GROUND_OFFSET = 45;  // ← 你调整的这个值
+        let distance, boneCount, ingredientCount;
+        let gameSpeed, baseSpeed;
+        let groundOffset, bgOffset1, bgOffset2, bgOffset3;
+        let lastObstacleTime, minObstacleGap;
+        let frameCount;
+        let isDucking = false;
+        let deathAnimFrame = 0;
+        let isDead = false;
+        
+        // ===== 颜色配置 =====
+        const COLORS = {
+            sky: '#87CEEB',
+            skyGradientTop: '#5BA3C6',
+            skyGradientBottom: '#B0E0E6',
+            sun: '#FFE066',
+            sunGlow: '#FFFACD',
+            mountain1: '#6B8E6B',
+            mountain2: '#8FBC8F',
+            mountain3: '#90EE90',
+            hill: '#7CCD7C',
+            ground: '#8B7355',
+            grass: '#228B22',
+            grassLight: '#32CD32',
+            mushroomHouse: '#DEB887',
+            roof: '#8B4513',
+            window: '#87CEEB',
+            door: '#A0522D',
+            playerBody: '#E8A849',
+            playerLight: '#F5C36A',
+            playerDark: '#C4852A',
+            playerNose: '#2C1810',
+            playerEye: '#2C1810',
+            bone: '#FFFAF0',
+            boneShadow: '#DDD8C4',
+            chicken: '#FFFAF0',
+            chickenBeak: '#FF8C00',
+            chickenComb: '#FF4444',
+            chickenLeg: '#FF8C00',
+            corn: '#FFD700',
+            cornLeaf: '#228B22',
+            cornStalk: '#228B22',
+            puddle: '#4682B4',
+            puddleHighlight: '#6495ED',
+            basket: '#D2691E',
+            basketWeave: '#8B4513',
+            goose: '#F5F5F5',
+            gooseBeak: '#FF8C00',
+            gooseNeck: '#E8E8E8',
+            tomato: '#FF6347',
+            tomatoStem: '#228B22',
+            pepper: '#FF4500',
+            pepperStem: '#228B22',
+            fish: '#4682B8',
+            fishBelly: '#B0C4DE',
+            floatText: '#FFD700',
+            cloud: 'rgba(255,255,255,0.9)'
+        };
+        
+        // ===== 初始化游戏 =====
+
+        const PLAYER_GROUND_Y = GROUND_Y - 45;  // ← 小H的地面站立位置
+
+        function initGame() {
+            player = {
+                x: 80,
+                y: GROUND_Y - PLAYER_GROUND_OFFSET,   // 将y轴位置用常量
+                width: 50,
+                height: 60,
+                velocityY: 0,
+                isJumping: false,
+                isDucking: false,
+                runFrame: 0,
+                frameTimer: 0
+            };
+            
+            obstacles = [];
+            collectibles = [];
+            particles = [];
+            distance = 0;
+            boneCount = 0;
+            ingredientCount = 0;
+            baseSpeed = 1.2;        // 基础速度调慢,高了会飞起来
+            gameSpeed = baseSpeed;
+            groundOffset = 0;
+            bgOffset1 = 0;
+            bgOffset2 = 0;
+            bgOffset3 = 0;
+
+            // ← 添加这两行重置背景状态
+            bgOffset = 0;
+            currentBgIndex = 0;
+
+
+            lastObstacleTime = 0;
+            minObstacleGap = 1500;
+            frameCount = 0;
+            isDucking = false;
+            deathAnimFrame = 0;
+            isDead = false;
+        }
+
+        // ===== 定义动画图片资源加载路径 =====
+        const RUN_PATH = 'donghua/runright/';           //向右跑的素材路径
+        const JUMP_PATH = 'donghua/jump/';         //跳跃的素材路径
+        const IDLE_PATH = 'donghua/jinglintu/';  // // 待机素材路径（根据你复制后的位置调整）
+        const DEAD_PATH = 'donghua/dead/';   // ← 坠机动画
+        const dogAnimations = {
+            run: [],
+            jump: [],
+            texture: null,   // 待机精灵图（大图）
+            dead: []   // ← 新增
+        };
+
+
+        // 收集物素材配置（方便后续扩展）
+        const collectibleAssets = {
+            fengche: null   // 风车
+        };
+
+        // 障碍物素材配置
+        const OBSTACLE_PATH = 'donghua/obstacle/';
+
+        const obstacleAnimations = {
+            peacock: [],   // 孔雀 001-027（天上）
+            duck: []       // 鸭子 001-016（地上）
+        };
+
+
+
+        // ===== 背景素材配置 =====
+        const bgConfig = [
+            { name: 'changcheng', path: 'donghua/bg/001.jpg', distance: 0 },
+            { name: 'helingcun', path: 'donghua/bg/002.jpg', distance: 200},
+            { name: 'jiuzhaigou', path: 'donghua/bg/003.jpg', distance: 390 },
+            { name: 'tiananmen', path: 'donghua/bg/004.jpg', distance: 480 }
+        ];
+        const bgAssets = {};
+        let currentBgIndex = 0;
+        let bgOffset = 0;  // 只有这一个偏移量，全局滚动
+        let nextBgIndex = 0;
+        let bgTransition = 0;
+
+
+        let assetsLoaded = false;
+
+        function loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => {
+                    console.error('加载失败:', src);
+                    reject();
+                };
+                img.src = src;
+            });
+        }
+
+        async function loadDogAssets() {
+            const promises = [];
+
+            // 加载跑步帧 001.png ~ 007.png
+            for (let i = 1; i <= 7; i++) {
+                const num = i.toString().padStart(3, '0');
+                const p = loadImage(`${RUN_PATH}${num}.png`).then(img => {
+                    dogAnimations.run.push(img);
+                }).catch(() => {});
+                promises.push(p);
+            }
+
+            // 加载跳跃帧 001.png ~ 014.png
+            for (let i = 1; i <= 14; i++) {
+                const num = i.toString().padStart(3, '0');
+                const p = loadImage(`${JUMP_PATH}${num}.png`).then(img => {
+                    dogAnimations.jump.push(img);
+                }).catch(() => {});
+                promises.push(p);
+            }
+            // 加载待机精灵图
+            promises.push(
+                loadImage(`${IDLE_PATH}texture.png`).then(img => {  // ← 文件名是 texture.png
+                    dogAnimations.idle = img;
+                }).catch(() => {})
+            );
+
+            // 加载晕倒帧 009.png ~ 051.png（共43帧，跳过前8帧）
+            for (let i = 9; i <= 51; i++) {
+                const num = i.toString().padStart(3, '0');
+                const p = loadImage(`${DEAD_PATH}${num}.png`).then(img => {
+                    dogAnimations.dead.push(img);
+                }).catch(() => {});
+                promises.push(p);
+            }
+
+            // 加载风车收集物
+            promises.push(
+                loadImage('donghua/collectible/风车png.png').then(img => {
+                    collectibleAssets.fengche = img;
+                }).catch(() => {
+                })
+            );
+
+            // ===== 加载背景素材（新增）=====
+            for (const bg of bgConfig) {
+                const p = loadImage(bg.path).then(img => {
+                    bgAssets[bg.name] = img;
+                }).catch(() => {});
+                promises.push(p);
+            }
+
+            // 加载孔雀帧 001.png ~ 027.png
+            for (let i = 1; i <= 27; i++) {
+                const num = i.toString().padStart(3, '0');
+                const p = loadImage(`${OBSTACLE_PATH}peacock/${num}.png`).then(img => {
+                    obstacleAnimations.peacock.push(img);
+                }).catch(() => {});
+                promises.push(p);
+            }
+
+            // 加载鸭子帧 001.png ~ 016.png
+            for (let i = 1; i <= 16; i++) {
+                const num = i.toString().padStart(3, '0');
+                const p = loadImage(`${OBSTACLE_PATH}duck/${num}.png`).then(img => {
+                    obstacleAnimations.duck.push(img);
+                }).catch(() => {});
+                promises.push(p);
+            }
+
+
+
+
+            await Promise.all(promises);
+            assetsLoaded = true;
+            console.log('素材加载完成，跑步:', dogAnimations.run.length, '跳跃:', dogAnimations.jump.length, '待机:', dogAnimations.idle ? '有' : '无', '晕倒:', dogAnimations.dead.length, '背景:', Object.keys(bgAssets));
+        }
+
+        loadDogAssets();
+
+
+
+        // ===== 绘制像素风柴犬 =====
+        function drawPixelDog(x, y, width, height, frame, ducking, dead) {
+            const scaleX = width / 50;
+            const scaleY = height / 60;
+
+            ctx.save();
+            ctx.translate(x, y);
+
+            if (dead) {
+                // 死亡时翻转摔倒
+                ctx.translate(width/2, height/2);
+                ctx.rotate(Math.PI/2);
+                ctx.translate(-width/2, -height/2);
+            }
+
+            const s = 2; // 像素大小
+
+            // 身体
+            ctx.fillStyle = COLORS.playerBody;
+            if (ducking) {
+                // 滑铲姿势 - 压扁身体
+                drawPixelRect(5*s, 8*s, 18*s, 12*s, s);
+                drawPixelRect(3*s, 10*s, 4*s, 8*s, s);
+                drawPixelRect(19*s, 10*s, 6*s, 8*s, s);
+            } else {
+                // 站立/跑步姿势
+                drawPixelRect(10*s, 10*s, 20*s, 18*s, s);
+                // 前腿
+                const legOffset = Math.sin(frame * 0.5) * 3;
+                drawPixelRect(8*s, 26*s + legOffset, 6*s, 14*s, s);
+                drawPixelRect(22*s, 26*s - legOffset, 6*s, 14*s, s);
+            }
+
+            // 头部
+            ctx.fillStyle = COLORS.playerBody;
+            if (ducking) {
+                drawPixelRect(20*s, 2*s, 16*s, 12*s, s);
+            } else {
+                drawPixelRect(18*s, 0, 18*s, 14*s, s);
+            }
+
+            // 耳朵
+            ctx.fillStyle = COLORS.playerDark;
+            if (ducking) {
+                drawPixelRect(20*s, -2*s, 5*s, 5*s, s);
+                drawPixelRect(30*s, -2*s, 5*s, 5*s, s);
+            } else {
+                drawPixelRect(18*s, -3*s, 5*s, 6*s, s);
+                drawPixelRect(32*s, -3*s, 5*s, 6*s, s);
+            }
+
+            // 脸部（浅色）
+            ctx.fillStyle = COLORS.playerLight;
+            if (ducking) {
+                drawPixelRect(22*s, 5*s, 12*s, 6*s, s);
+            } else {
+                drawPixelRect(20*s, 3*s, 14*s, 8*s, s);
+            }
+
+            // 眼睛
+            ctx.fillStyle = COLORS.playerEye;
+            if (ducking) {
+                drawPixelRect(26*s, 5*s, 3*s, 3*s, s);
+                drawPixelRect(31*s, 5*s, 3*s, 3*s, s);
+            } else {
+                drawPixelRect(23*s, 3*s, 3*s, 3*s, s);
+                drawPixelRect(30*s, 3*s, 3*s, 3*s, s);
+                // 眼睛高光
+                ctx.fillStyle = '#FFFFFF';
+                drawPixelRect(23*s, 3*s, 1*s, 1*s, s);
+                drawPixelRect(30*s, 3*s, 1*s, 1*s, s);
+            }
+
+            // 鼻子
+            ctx.fillStyle = COLORS.playerNose;
+            if (ducking) {
+                drawPixelRect(35*s, 7*s, 4*s, 3*s, s);
+                drawPixelRect(35*s, 10*s, 4*s, 1*s, s);
+            } else {
+                drawPixelRect(33*s, 8*s, 4*s, 3*s, s);
+                drawPixelRect(33*s, 11*s, 4*s, 1*s, s);
+            }
+
+            // 舌头（跑步时）
+            if (!ducking && !dead && frame % 20 < 10) {
+                ctx.fillStyle = '#FF6B6B';
+                drawPixelRect(33*s, 12*s, 3*s, 4*s, s);
+            }
+
+            // 尾巴
+            ctx.fillStyle = COLORS.playerBody;
+            const tailWag = Math.sin(frame * 0.8) * 2;
+            if (ducking) {
+                drawPixelRect(2*s, 8*s, 4*s, 6*s, s);
+            } else {
+                drawPixelRect(2*s, 8*s + tailWag, 5*s, 8*s, s);
+            }
+
+            ctx.restore();
+        }
+        // 已有动画素材，可注释掉绘制柴犬
+
+
+        
+        function drawPixelRect(x, y, w, h, s) {
+            ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+        }
+
+
+        // ===== 绘制小H（全素材版）=====
+        function drawAnimatedDog(x, y, width, height, frame, ducking, dead) {
+            if (!assetsLoaded) return;
+
+            let img = null;
+            let needFlip = false;  // 是否需要水平翻转
+
+            if (dead) {
+                // 晕倒动画：43帧（009~051），播放一次不循环
+                // deathAnimFrame 从 0 开始，但实际素材从第9张开始
+                // 所以映射：0→0, 1→1, ... 前8帧用第9张素材（即数组索引0）
+                const frameIndex = Math.min(Math.floor(deathAnimFrame / 2), dogAnimations.dead.length - 1);
+                img = dogAnimations.dead[frameIndex];
+                needFlip = true;
+            } else if (gameState === GameState.START) {
+                // 待机动画：6帧循环
+                if (!dogAnimations.idle) return;
+                const idleFrame = Math.floor(frame / 8) % 6;
+                const cols = 3;
+                const rows = 2;
+                const frameW = dogAnimations.idle.width / cols;
+                const frameH = dogAnimations.idle.height / rows;
+                const col = idleFrame % cols;
+                const row = Math.floor(idleFrame / cols);
+
+                ctx.save();
+                ctx.translate(x + width, y);
+                ctx.scale(-1, 1);  // 待机素材向左，翻转向右
+                ctx.drawImage(dogAnimations.idle, col * frameW, row * frameH, frameW, frameH, 0, 0, width, height);
+                ctx.restore();
+                return;
+            } else if (ducking) {
+                // 滑铲：暂时用跑步第一帧代替（如果有滑铲素材再改）
+                img = dogAnimations.run[0];
+            } else if (player.isJumping) {
+                // 跳跃：14帧循环
+                const frameIndex = Math.floor(frame / 4) % dogAnimations.jump.length;
+                img = dogAnimations.jump[frameIndex];
+                needFlip = true;  // 跳跃素材向左，需要翻转
+            } else {
+                // 跑步：7帧循环
+                const frameIndex = Math.floor(frame / 6) % dogAnimations.run.length;
+                img = dogAnimations.run[frameIndex];
+            }
+
+            if (!img) return;
+
+            if (needFlip) {
+                ctx.save();
+                ctx.translate(x + width, y);
+                ctx.scale(-1, 1);
+                ctx.drawImage(img, 0, 0, width, height);
+                ctx.restore();
+            } else {
+                ctx.drawImage(img, x, y, width, height);
+            }
+        }
+
+
+// ===== 在全局变量区添加 =====
+        let bgCycleCount = 0;  // 记录循环次数，用于计算虚拟距离
+// ===== 绘制背景（循环版）=====
+        function drawBackground() {
+            // 计算当前应该显示第几张背景（支持循环）
+            let targetIndex = 0;
+
+            // 🔄 循环逻辑：计算虚拟距离（用于背景切换判断）
+            const lastBgStart = bgConfig[bgConfig.length - 1].distance; // 450
+            const lastBgDuration = 120;
+            const cycleLength = lastBgStart + lastBgDuration; // 570
+
+            // 用虚拟距离判断当前该显示哪张背景
+            const virtualDistance = distance % cycleLength;
+
+            // 根据虚拟距离找到对应的背景
+            for (let i = bgConfig.length - 1; i >= 0; i--) {
+                if (virtualDistance >= bgConfig[i].distance) {
+                    targetIndex = i;
+                    break;
+                }
+            }
+
+            // 限制最大索引（保险）
+            targetIndex = Math.min(targetIndex, bgConfig.length - 1);
+
+            // 切换背景时重置偏移（只在真正切换时重置）
+            if (targetIndex !== currentBgIndex) {
+                console.log(`切换背景到: ${bgConfig[targetIndex].name}, 实际距离: ${Math.floor(distance)}m, 虚拟距离: ${Math.floor(virtualDistance)}m`);
+                currentBgIndex = targetIndex;
+                bgOffset = 0; // 新背景从头开始滚动
+            }
+
+            // 绘制当前背景
+            const currentBg = bgAssets[bgConfig[currentBgIndex]?.name];
+            if (currentBg) {
+                drawScrollingBg(currentBg, 1);
+            } else {
+                drawFallbackBg();
+            }
+        }
+
+
+    // 绘制滚动背景（单张图片循环滚动）
+        function drawScrollingBg(img, alpha) {
+            ctx.globalAlpha = alpha;
+            const scale = GAME_HEIGHT / img.height;
+            const drawWidth = img.width * scale;
+
+            // ✅ 关键修复：使用取模确保无缝循环，避免浮点累积误差
+            const normalizedOffset = ((bgOffset % drawWidth) + drawWidth) % drawWidth;
+
+            let x = -normalizedOffset;
+            while (x < GAME_WIDTH + drawWidth) {
+                ctx.drawImage(img, 0, 0, img.width, img.height, x, 0, drawWidth, GAME_HEIGHT);
+                x += drawWidth;
+            }
+            ctx.globalAlpha = 1;
+        }
+    function drawFallbackBg() {
+        const gradient = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT * 0.6);
+        gradient.addColorStop(0, COLORS.skyGradientTop);
+        gradient.addColorStop(1, COLORS.skyGradientBottom);
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        drawSun(280, 80);
+        drawClouds();
+    }
+
+
+
+        function drawSun(x, y) {
+            // 光晕
+            ctx.fillStyle = COLORS.sunGlow;
+            ctx.beginPath();
+            ctx.arc(x, y, 35, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 太阳本体
+            ctx.fillStyle = COLORS.sun;
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        function drawClouds() {
+            const cloudY = [50, 100, 70];
+            const cloudX = [80, 200, 300];
+            const cloudSize = [25, 20, 30];
+            
+            ctx.fillStyle = COLORS.cloud;
+            cloudX.forEach((cx, i) => {
+                const offset = ((bgOffset1 / 3 + i * 100) % (GAME_WIDTH + 100)) - 50;
+                drawCloud(offset, cloudY[i], cloudSize[i]);
+            });
+        }
+        
+        function drawCloud(x, y, size) {
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.8, y - size * 0.3, size * 0.7, 0, Math.PI * 2);
+            ctx.arc(x + size * 1.5, y, size * 0.8, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.5, y + size * 0.3, size * 0.6, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // function drawMountains(count, baseY, color, parallax) {
+        //     ctx.fillStyle = color;
+        //     const offset = (bgOffset1 * parallax) % (GAME_WIDTH / 2);
+        //
+        //     for (let i = -1; i < count + 2; i++) {
+        //         const x = i * (GAME_WIDTH / count) - offset;
+        //         const height = 60 + Math.sin(i * 2.5) * 30;
+        //
+        //         ctx.beginPath();
+        //         ctx.moveTo(x, baseY + 40);
+        //         ctx.lineTo(x + GAME_WIDTH / (count * 2), baseY - height);
+        //         ctx.lineTo(x + GAME_WIDTH / count, baseY + 40);
+        //         ctx.closePath();
+        //         ctx.fill();
+        //     }
+        // }
+        //
+        // function drawHills() {
+        //     const offset = bgOffset2 * 0.8;
+        //     ctx.fillStyle = COLORS.hill;
+        //
+        //     // 左边山丘
+        //     const hill1X = (-offset) % 200;
+        //     ctx.beginPath();
+        //     ctx.arc(hill1X + 100, GROUND_Y + 60, 80, Math.PI, 0);
+        //     ctx.fill();
+        //
+        //     // 右边山丘
+        //     const hill2X = (200 - offset) % 200;
+        //     ctx.beginPath();
+        //     ctx.arc(hill2X + 100, GROUND_Y + 60, 100, Math.PI, 0);
+        //     ctx.fill();
+        // }
+        //
+        // function drawMushroomHouse() {
+        //     const houseX = 20 + ((bgOffset3 * 0.4) % 500) - 100;
+        //     const houseY = GROUND_Y - 30;
+        //
+        //     // 蘑菇屋主体
+        //     ctx.fillStyle = COLORS.mushroomHouse;
+        //     ctx.fillRect(houseX, houseY, 50, 35);
+        //
+        //     // 屋顶（蘑菇帽）
+        //     ctx.fillStyle = '#F5DEB3';
+        //     ctx.beginPath();
+        //     ctx.moveTo(houseX - 5, houseY);
+        //     ctx.quadraticCurveTo(houseX + 25, houseY - 50, houseX + 55, houseY);
+        //     ctx.fill();
+        //
+        //     // 红色斑点
+        //     ctx.fillStyle = '#CD5C5C';
+        //     ctx.beginPath();
+        //     ctx.arc(houseX + 10, houseY - 20, 6, 0, Math.PI * 2);
+        //     ctx.arc(houseX + 35, houseY - 25, 5, 0, Math.PI * 2);
+        //     ctx.arc(houseX + 25, houseY - 35, 4, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 门
+        //     ctx.fillStyle = COLORS.door;
+        //     ctx.fillRect(houseX + 18, houseY + 10, 14, 25);
+        //
+        //     // 门把手
+        //     ctx.fillStyle = '#FFD700';
+        //     ctx.beginPath();
+        //     ctx.arc(houseX + 28, houseY + 22, 2, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 窗户
+        //     ctx.fillStyle = COLORS.window;
+        //     ctx.fillRect(houseX + 5, houseY + 8, 10, 10);
+        //     ctx.fillRect(houseX + 35, houseY + 8, 10, 10);
+        // }
+        
+        // ===== 绘制地面 =====
+        function drawGround() {
+            // 主地面
+            ctx.fillStyle = COLORS.ground;
+            ctx.fillRect(0, GROUND_Y, GAME_WIDTH, GAME_HEIGHT - GROUND_Y);
+            
+            // 草地层
+            ctx.fillStyle = COLORS.grass;
+            ctx.fillRect(0, GROUND_Y - 5, GAME_WIDTH, 15);
+            
+            // 草地纹理
+            const grassOffset = groundOffset % 20;
+            ctx.fillStyle = COLORS.grassLight;
+            for (let i = -1; i < GAME_WIDTH / 20 + 2; i++) {
+                const x = i * 20 - grassOffset;
+                // 小草
+                ctx.beginPath();
+                ctx.moveTo(x, GROUND_Y);
+                ctx.lineTo(x + 3, GROUND_Y - 8);
+                ctx.lineTo(x + 6, GROUND_Y);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.moveTo(x + 10, GROUND_Y);
+                ctx.lineTo(x + 12, GROUND_Y - 6);
+                ctx.lineTo(x + 14, GROUND_Y);
+                ctx.fill();
+            }
+            
+            // 地面细节
+            ctx.fillStyle = '#7A6248';
+            for (let i = -1; i < GAME_WIDTH / 40 + 2; i++) {
+                const x = i * 40 - (groundOffset * 0.5) % 40;
+                ctx.fillRect(x, GROUND_Y + 30, 15, 3);
+                ctx.fillRect(x + 20, GROUND_Y + 50, 10, 2);
+            }
+        }
+
+
+        // ===== 绘制障碍物（素材版）=====
+        function drawObstacle(obs) {
+            const anim = obstacleAnimations[obs.type];
+            if (!anim || anim.length === 0) return;
+
+            // 减慢动画：从 /4 改为 /6（数字越大越慢）
+            const speed = obs.type === 'duck' ? 20 : 6;  // 鸭子8帧换一张，孔雀6帧
+            const frameIndex = Math.floor(frameCount / speed) % anim.length;
+            const img = anim[frameIndex];
+            if (!img) return;
+
+            ctx.save();
+
+            if (obs.type === 'peacock') {
+                // 孔雀：不用翻转，直接镜像绘制
+                ctx.drawImage(img, obs.x, obs.y, obs.width, obs.height);
+
+
+                // // 调试：孔雀绘制碰撞箱
+                // ctx.strokeStyle = 'red';
+                // ctx.lineWidth = 2;
+                // ctx.strokeRect(obs.x + obs.hitboxX, obs.y + obs.hitboxY, obs.hitboxW, obs.hitboxH);
+                // // 调试：孔雀绘制碰撞箱
+
+
+            } else {
+                ctx.drawImage(img, obs.x, obs.y, obs.width, obs.height);
+            }
+
+            // // 调试：鸭子绘制碰撞箱（红色边框）
+            // ctx.strokeStyle = 'red';
+            // ctx.lineWidth = 2;
+            // ctx.strokeRect(obs.x + obs.hitboxX, obs.y + obs.hitboxY, obs.hitboxW, obs.hitboxH);
+            // // 调试：鸭子绘制碰撞箱（红色边框）
+
+
+
+            ctx.restore();
+        }
+
+        //像素障碍物绘制函数
+        // function drawChicken(y) {
+        //     const x = 0;
+        //     // 身体
+        //     ctx.fillStyle = COLORS.chicken;
+        //     ctx.beginPath();
+        //     ctx.ellipse(x + 15, y - 12, 14, 12, 0, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 头
+        //     ctx.beginPath();
+        //     ctx.arc(x + 25, y - 20, 8, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 鸡冠
+        //     ctx.fillStyle = COLORS.chickenComb;
+        //     ctx.beginPath();
+        //     ctx.moveTo(x + 22, y - 28);
+        //     ctx.lineTo(x + 25, y - 35);
+        //     ctx.lineTo(x + 28, y - 28);
+        //     ctx.lineTo(x + 31, y - 36);
+        //     ctx.lineTo(x + 34, y - 28);
+        //     ctx.fill();
+        //
+        //     // 嘴巴
+        //     ctx.fillStyle = COLORS.chickenBeak;
+        //     ctx.beginPath();
+        //     ctx.moveTo(x + 32, y - 20);
+        //     ctx.lineTo(x + 40, y - 18);
+        //     ctx.lineTo(x + 32, y - 16);
+        //     ctx.closePath();
+        //     ctx.fill();
+        //
+        //     // 眼睛
+        //     ctx.fillStyle = '#000';
+        //     ctx.beginPath();
+        //     ctx.arc(x + 28, y - 22, 2, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 腿
+        //     ctx.fillStyle = COLORS.chickenLeg;
+        //     ctx.fillRect(x + 10, y - 5, 3, 8);
+        //     ctx.fillRect(x + 18, y - 5, 3, 8);
+        //
+        //     // 小鸡（随机附加）
+        //     if (Math.random() > 0.5) {
+        //         ctx.fillStyle = '#FFFFE0';
+        //         ctx.beginPath();
+        //         ctx.arc(x + 5, y - 5, 6, 0, Math.PI * 2);
+        //         ctx.fill();
+        //     }
+        // }
+        //
+        // function drawCorn(y) {
+        //     // 玉米秆
+        //     ctx.fillStyle = COLORS.cornStalk;
+        //     ctx.fillRect(5, y - 50, 6, 50);
+        //
+        //     // 叶子
+        //     ctx.fillStyle = COLORS.cornLeaf;
+        //     ctx.beginPath();
+        //     ctx.moveTo(8, y - 30);
+        //     ctx.quadraticCurveTo(-10, y - 25, -5, y - 15);
+        //     ctx.quadraticCurveTo(8, y - 20, 8, y - 30);
+        //     ctx.fill();
+        //
+        //     ctx.beginPath();
+        //     ctx.moveTo(8, y - 35);
+        //     ctx.quadraticCurveTo(25, y - 30, 20, y - 20);
+        //     ctx.quadraticCurveTo(8, y - 25, 8, y - 35);
+        //     ctx.fill();
+        //
+        //     // 玉米棒
+        //     ctx.fillStyle = COLORS.corn;
+        //     ctx.beginPath();
+        //     ctx.ellipse(15, y - 35, 8, 18, 0.2, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 玉米粒纹理
+        //     ctx.fillStyle = '#E6BE00';
+        //     for (let i = 0; i < 4; i++) {
+        //         ctx.beginPath();
+        //         ctx.arc(12, y - 42 + i * 6, 5, 0, Math.PI * 2);
+        //         ctx.fill();
+        //         ctx.beginPath();
+        //         ctx.arc(18, y - 39 + i * 6, 5, 0, Math.PI * 2);
+        //         ctx.fill();
+        //     }
+        // }
+        //
+        // function drawPuddle(y) {
+        //     // 水坑
+        //     ctx.fillStyle = COLORS.puddle;
+        //     ctx.beginPath();
+        //     ctx.ellipse(20, y - 3, 30, 8, 0, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 水面高光
+        //     ctx.fillStyle = COLORS.puddleHighlight;
+        //     ctx.beginPath();
+        //     ctx.ellipse(12, y - 5, 8, 3, -0.3, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     ctx.beginPath();
+        //     ctx.ellipse(28, y - 4, 5, 2, 0.2, 0, Math.PI * 2);
+        //     ctx.fill();
+        // }
+        //
+        // function drawBasket(y) {
+        //     // 篮子主体
+        //     ctx.fillStyle = COLORS.basket;
+        //     ctx.beginPath();
+        //     ctx.moveTo(-15, y);
+        //     ctx.lineTo(-20, y - 35);
+        //     ctx.lineTo(20, y - 35);
+        //     ctx.lineTo(15, y);
+        //     ctx.closePath();
+        //     ctx.fill();
+        //
+        //     // 编织纹理
+        //     ctx.strokeStyle = COLORS.basketWeave;
+        //     ctx.lineWidth = 2;
+        //     for (let i = 0; i < 4; i++) {
+        //         ctx.beginPath();
+        //         ctx.moveTo(-18 + i * 2, y - 5 - i * 8);
+        //         ctx.lineTo(13 - i * 2, y - 5 - i * 8);
+        //         ctx.stroke();
+        //     }
+        //
+        //     // 提手
+        //     ctx.strokeStyle = COLORS.basketWeave;
+        //     ctx.lineWidth = 4;
+        //     ctx.beginPath();
+        //     ctx.arc(0, y - 35, 18, Math.PI, 0);
+        //     ctx.stroke();
+        //
+        //     // 边缘
+        //     ctx.fillStyle = COLORS.basketWeave;
+        //     ctx.fillRect(-22, y - 38, 44, 5);
+        // }
+        //
+        // function drawGoose(y) {
+        //     // 身体（比鸡大）
+        //     ctx.fillStyle = COLORS.goose;
+        //     ctx.beginPath();
+        //     ctx.ellipse(20, y - 18, 20, 16, 0, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 脖子
+        //     ctx.fillStyle = COLORS.gooseNeck;
+        //     ctx.beginPath();
+        //     ctx.moveTo(35, y - 20);
+        //     ctx.quadraticCurveTo(50, y - 40, 45, y - 50);
+        //     ctx.quadraticCurveTo(40, y - 55, 35, y - 50);
+        //     ctx.quadraticCurveTo(30, y - 35, 32, y - 20);
+        //     ctx.fill();
+        //
+        //     // 头
+        //     ctx.fillStyle = COLORS.goose;
+        //     ctx.beginPath();
+        //     ctx.arc(45, y - 52, 8, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 嘴巴
+        //     ctx.fillStyle = COLORS.gooseBeak;
+        //     ctx.beginPath();
+        //     ctx.moveTo(50, y - 52);
+        //     ctx.lineTo(62, y - 50);
+        //     ctx.lineTo(50, y - 48);
+        //     ctx.closePath();
+        //     ctx.fill();
+        //
+        //     // 眼睛
+        //     ctx.fillStyle = '#000';
+        //     ctx.beginPath();
+        //     ctx.arc(48, y - 54, 2, 0, Math.PI * 2);
+        //     ctx.fill();
+        //
+        //     // 腿
+        //     ctx.fillStyle = COLORS.gooseBeak;
+        //     ctx.fillRect(12, y - 5, 5, 10);
+        //     ctx.fillRect(25, y - 5, 5, 10);
+        // }
+        //
+        //
+
+
+
+        // ===== 绘制收集物 =====
+        // ===== 绘制收集物（素材版）=====
+        function drawCollectible(col) {
+            ctx.save();
+            ctx.translate(col.x, col.y);
+
+            // 旋转动画
+            const rotation = frameCount * 0.05;
+            ctx.rotate(rotation);
+
+            // 根据类型绘制不同素材
+            switch(col.type) {
+                case 'fengche':
+                    if (collectibleAssets.fengche) {
+                        const size = Math.max(col.width, col.height);
+                        ctx.drawImage(collectibleAssets.fengche, -size/2, -size/2, size, size);
+                    }
+                    break;
+                default:
+                    // 兜底：如果素材没加载，不绘制
+                    break;
+            }
+
+            ctx.restore();
+        }
+        function drawBone() {
+            ctx.fillStyle = COLORS.bone;
+            // 骨头主体
+            ctx.fillRect(-12, -3, 24, 6);
+            // 骨节
+            ctx.beginPath();
+            ctx.arc(-10, 0, 5, 0, Math.PI * 2);
+            ctx.arc(10, 0, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(-10, -3, 3, 0, Math.PI * 2);
+            ctx.arc(-10, 3, 3, 0, Math.PI * 2);
+            ctx.arc(10, -3, 3, 0, Math.PI * 2);
+            ctx.arc(10, 3, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 阴影
+            ctx.fillStyle = COLORS.boneShadow;
+            ctx.fillRect(-12, 2, 24, 2);
+        }
+        
+        function drawTomato() {
+            // 番茄主体
+            ctx.fillStyle = COLORS.tomato;
+            ctx.beginPath();
+            ctx.arc(0, 3, 14, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 高光
+            ctx.fillStyle = '#FF7F7F';
+            ctx.beginPath();
+            ctx.arc(-4, -2, 6, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 茎
+            ctx.fillStyle = COLORS.tomatoStem;
+            ctx.beginPath();
+            ctx.moveTo(-3, -10);
+            ctx.lineTo(0, -14);
+            ctx.lineTo(3, -10);
+            ctx.lineTo(0, -8);
+            ctx.fill();
+        }
+        
+        function drawPepper() {
+            // 辣椒主体
+            ctx.fillStyle = COLORS.pepper;
+            ctx.beginPath();
+            ctx.moveTo(0, -15);
+            ctx.quadraticCurveTo(12, 0, 5, 18);
+            ctx.quadraticCurveTo(0, 20, -5, 18);
+            ctx.quadraticCurveTo(-12, 0, 0, -15);
+            ctx.fill();
+            
+            // 高光
+            ctx.fillStyle = '#FF6B3D';
+            ctx.beginPath();
+            ctx.ellipse(-3, 0, 3, 8, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 茎
+            ctx.fillStyle = COLORS.pepperStem;
+            ctx.fillRect(-2, -18, 4, 6);
+        }
+        
+        function drawFish() {
+            // 鱼身
+            ctx.fillStyle = COLORS.fish;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 18, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 肚子
+            ctx.fillStyle = COLORS.fishBelly;
+            ctx.beginPath();
+            ctx.ellipse(-3, 3, 12, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 尾巴
+            ctx.fillStyle = COLORS.fish;
+            ctx.beginPath();
+            ctx.moveTo(-15, 0);
+            ctx.lineTo(-25, -10);
+            ctx.lineTo(-25, 10);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 眼睛
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(10, -2, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // ===== 绘制粒子 =====
+        function drawParticles() {
+            particles.forEach(p => {
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                ctx.font = `bold ${p.size}px 'Courier New'`;
+                ctx.fillText(p.text, p.x, p.y);
+            });
+            ctx.globalAlpha = 1;
+        }
+        
+        // ===== 生成障碍物 =====
+        // ===== 生成障碍物（素材版）=====
+        function generateObstacle() {
+            const now = Date.now();
+            const adjustedGap = Math.max(800, minObstacleGap - distance * 0.5);
+
+            if (now - lastObstacleTime < adjustedGap) return;
+
+            // 随机选择障碍物类型
+            const isPeacock = Math.random() > 0.5;
+
+            const obs = {
+                type: isPeacock ? 'peacock' : 'duck',
+                x: GAME_WIDTH + 50,
+                passed: false,
+                animFrame: 0
+            };
+
+            if (isPeacock) {
+                // 孔雀：在天上
+                obs.y = GROUND_Y - 150 - Math.random() * 80;
+                obs.width = 70;          // 绘制尺寸
+                obs.height = 70;         // 绘制尺寸
+                obs.hitboxX = 15;        // ← 碰撞箱左边距（居中缩小）
+                obs.hitboxY = 15;        // ← 碰撞箱上边距
+                obs.hitboxW = 40;        // ← 碰撞箱宽度（比绘制小）
+                obs.hitboxH = 40;        // ← 碰撞箱高度
+                obs.duckable = false;
+            } else {
+                // 鸭子：在地上
+                obs.y = GROUND_Y - 65;      // 鸭子y轴位置   数值越小越往下
+                obs.width = 80;
+                obs.height = 100;
+                obs.hitboxX = 15;          //数值越大越往右
+                obs.hitboxY = 18;           // ← 如果鸭子往下移，碰撞箱也往下调,数值越大越往下
+                obs.hitboxW = 45;
+                obs.hitboxH = 40;
+                obs.duckable = Math.random() > 0.7;
+            }
+
+            obstacles.push(obs);
+            lastObstacleTime = now;
+        }
+        // ===== 生成收集物 =====
+        function generateCollectible() {
+            if (Math.random() > 0.03) return;
+
+            const col = {
+                type: 'fengche',           // ← 统一用素材类型名
+                x: GAME_WIDTH + 30,
+                y: GROUND_Y - 40 - Math.random() * 60,
+                width: 35,                 // ← 游戏内显示尺寸
+                height: 35,
+                value: 50                  // ← 统一分值
+            };
+
+            collectibles.push(col);
+        }
+        // ===== 碰撞检测 =====
+        function checkCollision(rect1, rect2) {
+            return rect1.x < rect2.x + rect2.width &&
+                   rect1.x + rect1.width > rect2.x &&
+                   rect1.y < rect2.y + rect2.height &&
+                   rect1.y + rect1.height > rect2.y;
+        }
+        
+        // ===== 游戏更新 =====
+        function update(deltaTime) {
+
+            if (gameState !== GameState.PLAYING || isDead) return;
+
+            frameCount++;
+            distance += gameSpeed * 0.1;
+            
+            // 速度递增
+            gameSpeed = baseSpeed + Math.floor(distance / 100) * 0.15;            // 降低速度递增幅度,增幅减半
+            gameSpeed = Math.min(gameSpeed, 8);                                   // 最高速度从15降到8
+            
+            // 更新玩家
+            player.frameTimer++;
+            if (player.frameTimer > 5) {
+                player.runFrame++;
+                player.frameTimer = 0;
+            }
+            
+            // 跳跃物理
+            if (player.isJumping) {
+                player.velocityY += 0.12; // 重力          // 将重力从0.8改为0.40,重力减小，下落更慢，滞空时间更长
+                player.y += player.velocityY;
+
+                if (player.y >= GROUND_Y - PLAYER_GROUND_OFFSET) {  // ← 改成常量
+                    player.y = GROUND_Y - PLAYER_GROUND_OFFSET;     // ← 改成常量
+                    player.isJumping = false;
+                    player.velocityY = 0;
+                }
+            }
+
+            // 更新背景偏移
+            // 更新背景偏移
+            groundOffset = (groundOffset + gameSpeed) % 20;
+            bgOffset1 = (bgOffset1 + gameSpeed * 0.3) % (GAME_WIDTH / 2);
+            bgOffset2 = (bgOffset2 + gameSpeed * 0.5) % 200;
+            bgOffset3 = (bgOffset3 + gameSpeed) % 500;
+            // 背景图滚动偏移
+            bgOffset += gameSpeed * 0.5;
+
+
+
+            // 生成障碍物和收集物
+            generateObstacle();
+            generateCollectible();
+            
+            // 更新障碍物
+            obstacles.forEach(obs => {
+                obs.x -= gameSpeed;
+            });
+            obstacles = obstacles.filter(obs => obs.x > -100);
+            
+            // 更新收集物
+            collectibles.forEach(col => {
+                col.x -= gameSpeed;
+            });
+            collectibles = collectibles.filter(col => col.x > -50);
+
+            // 玩家碰撞箱
+            const playerBox = {
+                x: player.x + 10,
+                y: player.y + (player.isDucking ? 25 : 0),
+                width: player.width - 20,
+                height: player.height - (player.isDucking ? 30 : 10)
+            };
+
+            // // 调试：绘制玩家碰撞箱（蓝色边框）
+            // ctx.strokeStyle = 'blue';
+            // ctx.lineWidth = 2;
+            // ctx.strokeRect(playerBox.x, playerBox.y, playerBox.width, playerBox.height);
+            //
+
+
+
+            // 注释该代码使小h无敌
+            // 检测障碍物碰撞
+            obstacles.forEach(obs => {
+                const obsBox = {
+                    x: obs.x + obs.hitboxX,
+                    y: obs.y + obs.hitboxY,
+                    width: obs.hitboxW,
+                    height: obs.hitboxH
+                };
+
+                if (checkCollision(playerBox, obsBox)) {
+                    if (obs.duckable && player.isDucking) {
+                        return;
+                    }
+                    gameOver();
+                }
+            });
+            // 注释该代码使小h无敌
+
+
+
+
+            
+            // 检测收集物碰撞
+            collectibles.forEach((col, index) => {
+                const colBox = {
+                    x: col.x - col.width/2,
+                    y: col.y - col.height/2,
+                    width: col.width,
+                    height: col.height
+                };
+                
+                if (checkCollision(playerBox, colBox)) {
+                    // 🆕 增加收集物计数（根据类型）
+                    if (col.type === 'fengche') {
+                        ingredientCount++;  // ← 风车计入食材/收集物
+                    }
+
+
+                // 🎵 播放收集音效
+                    if (collectSound && sfxEnabled) {
+                        collectSound.currentTime = 0;  // 重置到开头，支持连续快速播放
+                        collectSound.volume = 0.6;      // 音量 60%
+                        collectSound.play().catch(() => {});  // 捕获自动播放限制错误
+                    }
+                    
+                    // 飘字粒子
+                    particles.push({
+                        x: col.x,
+                        y: col.y,
+                        text: `+${col.value}`,
+                        color: COLORS.floatText,
+                        size: 20,
+                        life: 1,
+                        vy: -2
+                    });
+                    
+                    collectibles.splice(index, 1);
+                }
+            });
+            
+            // 更新粒子
+            particles.forEach(p => {
+                p.y += p.vy;
+                p.life -= 0.02;
+            });
+            particles = particles.filter(p => p.life > 0);
+        }
+
+        // ===== 游戏结束 =====
+        function gameOver() {
+            isDead = true;
+            if (bgmEnabled) bgm.pause();
+
+            // 晕倒动画播放完再显示结束界面
+            const deathAnim = () => {
+                deathAnimFrame++;
+                // 51帧，每2帧换一张，共102帧约1.7秒
+                if (deathAnimFrame > 102) {
+                    gameState = GameState.GAME_OVER;
+                    showGameOver();
+                } else {
+                    requestAnimationFrame(deathAnim);
+                }
+            };
+            deathAnim();
+        }
+
+        function showGameOver() {
+            // 计算最终分数
+            const distanceScore = Math.floor(distance) * 10;
+            const collectScore = ingredientCount * 50;
+            const finalScore = distanceScore + collectScore;
+            const mushroomCount = Math.floor(finalScore / 1000);
+
+            // 🍄 保存蘑菇数量到 localStorage，供主游戏读取
+            // 如果已有记录，累加；否则新建
+            const existingMushrooms = parseInt(localStorage.getItem('mushroomReward') || '0');
+            const totalMushrooms = existingMushrooms + mushroomCount;
+            localStorage.setItem('mushroomReward', totalMushrooms.toString());
+
+            // 同时保存本次获得的蘑菇数（用于显示）
+            localStorage.setItem('lastMushroomReward', mushroomCount.toString());
+            localStorage.setItem('lastGameScore', finalScore.toString());
+
+            // 显示结算信息
+            document.getElementById('finalScore').textContent = `🏃 距离: ${Math.floor(distance)}m (+${distanceScore}分)`;
+            document.getElementById('boneCount').textContent = `🍅 收集物: ${ingredientCount}个 (+${collectScore}分)`;
+            document.getElementById('ingredientCount').textContent = `🎯 总分: ${finalScore}`;
+
+            // 显示蘑菇奖励
+            let mushroomDiv = document.getElementById('mushroomReward');
+            if (!mushroomDiv) {
+                mushroomDiv = document.createElement('div');
+                mushroomDiv.id = 'mushroomReward';
+                mushroomDiv.className = 'stats';
+                mushroomDiv.style.color = '#FF6B6B';
+                document.getElementById('gameOverScreen').insertBefore(mushroomDiv, document.getElementById('restartBtn'));
+            }
+            mushroomDiv.textContent = `🍄 获得蘑菇: ${mushroomCount}个 (累计: ${totalMushrooms}个)`;
+
+            document.getElementById('restartBtn').textContent = '返回主菜单';
+            document.getElementById('gameOverScreen').style.display = 'flex';
+        }
+        // ===== 绘制 =====
+        function draw() {
+            ctx.save();
+            ctx.scale(scale, scale);
+            
+            // 清屏
+            ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+            
+            // 绘制背景层
+            drawBackground();
+            
+            // 绘制地面
+            drawGround();
+            // 待机状态绘制小H
+            if (gameState === GameState.START) {
+                drawAnimatedDog(player.x, player.y, player.width, player.height, frameCount, false, false);
+            }
+            
+            // 绘制收集物
+            collectibles.forEach(col => drawCollectible(col));
+            
+            // 绘制障碍物
+            obstacles.forEach(obs => drawObstacle(obs));
+            
+            // 绘制玩家
+            //将drawPixelDog 改成 drawAnimatedDog,使用动画素材
+            if (!isDead) {
+                drawAnimatedDog(
+                    player.x, 
+                    player.y, 
+                    player.width, 
+                    player.height, 
+                    player.runFrame,
+                    player.isDucking,
+                    false
+                );
+            } else {
+                // 死亡动画 - 摔倒
+                const rotation = Math.min(deathAnimFrame * 0.05, Math.PI/2);
+                ctx.save();
+                ctx.translate(player.x + player.width/2, player.y + player.height/2);
+                ctx.rotate(rotation);
+                drawAnimatedDog(-player.width/2, -player.height/2, player.width, player.height, 0, false, true);
+                ctx.restore();
+            }
+            
+            // 绘制粒子
+            drawParticles();
+            
+            // HUD
+            if (gameState === GameState.PLAYING) {
+                drawHUD();
+            }
+
+            // 🆕 暂停幕布
+            if (gameState === GameState.PAUSED) {
+                drawPauseOverlay();
+            }
+            
+            ctx.restore();
+        }
+
+        function drawHUD() {
+            // 分数背景
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(10, 10, 140, 50);  // ← 高度从70改50，因为内容少了
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.fillRect(12, 12, 136, 46);
+
+            // 距离
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Courier New';
+            ctx.fillText(`距离: ${Math.floor(distance)}m`, 20, 32);
+
+            // 得分（风车 50分/个）
+            ctx.fillStyle = '#333';
+            ctx.fillText(`得分: ${ingredientCount * 50}`, 20, 52);  // ← 替换骨头和番茄
+
+            // 速度指示器
+            const speedLevel = Math.floor((gameSpeed - baseSpeed) / 0.5);
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(GAME_WIDTH - 60, 10, 50, 25);
+            ctx.fillStyle = '#FF4444';
+            ctx.font = 'bold 12px Courier New';
+            ctx.fillText(`⚡ x${speedLevel + 1}`, GAME_WIDTH - 55, 28);
+        }
+        // ===== 输入处理 =====
+        function handleInput(action) {
+            if (gameState !== GameState.PLAYING || isDead) return;
+            
+            if (action === 'jump' && !player.isJumping) {
+                player.isJumping = true;
+                player.velocityY = -6                // 从-15改为-16跳得更高（负值越大跳得越高）,避免碰到第一个障碍物就坠机
+                player.isDucking = false;
+            } else if (action === 'duck') {
+                player.isDucking = true;
+            } else if (action === 'unduck') {
+                player.isDucking = false;
+            }
+        }
+        
+        // 触摸事件
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const y = (touch.clientY - rect.top) / rect.height;
+            
+            if (gameState === GameState.PLAYING) {
+                if (y < 0.5) {
+                    handleInput('jump');
+                } else {
+                    handleInput('duck');
+                }
+            }
+        }, { passive: false });
+        
+        canvas.addEventListener('touchend', (e) => {
+            if (gameState === GameState.PLAYING) {
+                handleInput('unduck');
+            }
+        });
+        
+        // 鼠标事件（桌面端）
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const y = (e.clientY - rect.top) / rect.height;
+            
+            if (gameState === GameState.PLAYING) {
+                if (y < 0.5) {
+                    handleInput('jump');
+                } else {
+                    handleInput('duck');
+                }
+            }
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            if (gameState === GameState.PLAYING) {
+                handleInput('unduck');
+            }
+        });
+
+
+        // 鼠标事件（桌面端）
+        canvas.addEventListener('mousedown', (e) => {
+            // 🆕 暂停状态下点击恢复游戏
+            if (gameState === GameState.PAUSED) {
+                togglePause();
+                return;
+            }
+
+            const rect = canvas.getBoundingClientRect();
+            const y = (e.clientY - rect.top) / rect.height;
+
+            if (gameState === GameState.PLAYING) {
+                if (y < 0.5) {
+                    handleInput('jump');
+                } else {
+                    handleInput('duck');
+                }
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            if (gameState === GameState.PLAYING) {
+                handleInput('unduck');
+            }
+        });
+        
+        // 键盘事件
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+                e.preventDefault();
+                handleInput('jump');
+            } else if (e.code === 'ArrowDown') {
+                e.preventDefault();
+                handleInput('duck');
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.code === 'ArrowDown') {
+                handleInput('unduck');
+            }
+        });
+        
+        // ===== 游戏循环 =====
+        let lastTime = 0;
+
+        function gameLoop(timestamp) {
+            const deltaTime = timestamp - lastTime;
+            lastTime = timestamp;
+
+            if (gameState === GameState.PLAYING) {
+                update(deltaTime);
+            }
+            draw();
+
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // ===== 启动游戏 =====
+        function startGame() {
+            initGame();
+            gameState = GameState.PLAYING;
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('pauseBtn').style.display = 'block';
+            document.getElementById('pauseBtn').textContent = '暂停';
+
+            // 播放背景音乐（死亡后重新开始会从头播放）
+            if (bgmEnabled) {
+                bgm.volume = 0.3;
+                bgm.currentTime = 0;
+                bgm.play().catch(() => {});
+            }
+        }
+
+        // 🆕 新增：返回主菜单
+        function backToMenu() {
+            gameState = GameState.START;
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'flex';
+            document.getElementById('pauseBtn').style.display = 'none';
+
+            // 停止背景音乐
+            bgm.pause();
+            bgm.currentTime = 0;
+
+            // 重置游戏数据（可选，保持显示待机画面）
+            initGame();
+        }
+
+
+// ===== 暂停游戏 =====
+        function togglePause() {
+            if (gameState === GameState.PLAYING) {
+                gameState = GameState.PAUSED;
+                document.getElementById('pauseBtn').textContent = '继续';
+                if (bgmEnabled) bgm.pause();
+            } else if (gameState === GameState.PAUSED) {
+                gameState = GameState.PLAYING;
+                document.getElementById('pauseBtn').textContent = '暂停';
+                if (bgmEnabled) bgm.play().catch(() => {});
+            }
+        }
+
+
+        // ===== 设置界面 =====
+        function showSettings() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('settingsScreen').style.display = 'flex';
+            updateToggleButtons();
+        }
+
+        function hideSettings() {
+            document.getElementById('settingsScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'flex';
+        }
+
+        function updateToggleButtons() {
+            const bgmBtn = document.getElementById('bgmToggle');
+            const sfxBtn = document.getElementById('sfxToggle');
+
+            bgmBtn.textContent = bgmEnabled ? '开启' : '关闭';
+            bgmBtn.style.background = bgmEnabled
+                ? 'linear-gradient(180deg, #4CAF50, #45a049)'
+                : 'linear-gradient(180deg, #666, #555)';
+
+            sfxBtn.textContent = sfxEnabled ? '开启' : '关闭';
+            sfxBtn.style.background = sfxEnabled
+                ? 'linear-gradient(180deg, #4CAF50, #45a049)'
+                : 'linear-gradient(180deg, #666, #555)';
+        }
+
+        function toggleBGM() {
+            bgmEnabled = !bgmEnabled;
+            updateToggleButtons();
+
+            if (!bgmEnabled) {
+                bgm.pause();
+            } else if (gameState === GameState.PLAYING) {
+                bgm.play().catch(() => {});
+            }
+        }
+
+        function toggleSFX() {
+            sfxEnabled = !sfxEnabled;
+            updateToggleButtons();
+        }
+
+
+        // ===== 绘制暂停幕布 =====
+        function drawPauseOverlay() {
+            // 半透明黑色幕布
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            // "已暂停" 文字
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 36px "Courier New", monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('已暂停', GAME_WIDTH / 2, GAME_HEIGHT / 2 - 20);
+
+            // 提示文字
+            ctx.fillStyle = '#CCCCCC';
+            ctx.font = '16px "Courier New", monospace';
+            ctx.fillText('点击屏幕继续', GAME_WIDTH / 2, GAME_HEIGHT / 2 + 25);
+
+            // 重置文字对齐
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'alphabetic';
+        }
+
+
+        // 按钮事件
+        document.getElementById('pauseBtn').addEventListener('click', togglePause);
+
+        // 键盘暂停（按 P 键）
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'KeyP') {
+                e.preventDefault();
+                togglePause();
+            }
+        });
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('startBtn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            startGame();
+        });
+
+// 原来的重新开始按钮现在改为返回主菜单
+        document.getElementById('restartBtn').addEventListener('click', backToMenu);
+        document.getElementById('restartBtn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            backToMenu();
+        });
+
+// 游戏结束屏幕点击也返回主菜单
+        document.getElementById('gameOverScreen').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('gameOverScreen') || e.target.id === 'restartBtn') {
+                return; // 让按钮自己的事件处理
+            }
+            // 点击空白处也返回主菜单
+            backToMenu();
+        });
+
+
+        // 设置按钮事件
+        document.getElementById('settingsBtn').addEventListener('click', showSettings);
+        document.getElementById('settingsBtn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            showSettings();
+        });
+
+        // 返回庭院按钮
+        document.getElementById('backToCourtyardBtn').addEventListener('click', () => {
+            if (gameState === GameState.GAME_OVER && typeof finalScore !== 'undefined') {
+                // 数据已在 showGameOver 中保存，直接跳转
+            }
+            window.location.assign('../index.html');
+        });
+        document.getElementById('backToCourtyardBtn').addEventListener('touchend', (e) => {
+            if (gameState === GameState.GAME_OVER && typeof finalScore !== 'undefined') {
+                // 数据已在 showGameOver 中保存，直接跳转
+            }
+            e.preventDefault();
+            window.location.assign('../index.html');
+        });
+
+        document.getElementById('backBtn').addEventListener('click', hideSettings);
+        document.getElementById('backBtn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            hideSettings();
+        });
+
+        document.getElementById('bgmToggle').addEventListener('click', toggleBGM);
+        document.getElementById('sfxToggle').addEventListener('click', toggleSFX);
+        
+        // 初始渲染
+        initGame();
+        requestAnimationFrame(gameLoop);
+        
+    })();
+    </script>
+
+<script>
+
+        // 用户点击音频
+        // 依旧雷霆大串Base64
+        // 把你自己的音频base64粘贴到引号里
+        const clickSoundSrc = "data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjQxLjEwMAAAAAAAAAAAAAAA//vgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAUAABVtgAYGBgYJCQkJCQwMDAwMDw8PDw8SUlJSUlVVVVVVWFhYWFhbW1tbW15eXl5eYaGhoaGkpKSkpKenp6enqqqqqqqtra2trbDw8PDw8/Pz8/P29vb29vn5+fn5/Pz8/Pz//////8AAAAATGF2YzU4Ljc1AAAAAAAAAAAAAAAAJAUQAAAAAAAAVbbhn+9nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//vgZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//viZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/74mQAD/AAAGkAAAAIAAANIAAAAQAAAaQUAAAgAAA0goAABExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV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JQVMowowzKAzoxQcwREzScy44ZCmSGhAF5U0i0ypzGGQwM1pD0xg0xQ0xwswAEwwVdjPGJqwlzkzhABMMDZpFrAFLGrYGtOCxIKAQMBZoBRgGEug/7sF3kwmlmACp4q2gQGBgqgpalEVSpoQiAmHLGdOCxowh00yMSQgkEWuamW6VEz5XTSiyymZiB5igbNgoJModM8RFAxlyBfpgSDzoKDKdltWCsBU1fAvMYQaJCWHRO8IgplDpmCIYJQQmGCoUuy/BcJAEikOAzBgi7T5rlXgYkwaVcbNcaMcsAYMIimZJCZ46a6ieSmUQAKCMUbASlugFCGJFGNHGLAKmAoJdhcZjKqhixgkGoFTMOCwEDCUPgMKcZAUDgSnaDrEniMCKKATQDAhkzktgUCW0oyYIuZ4+ZgmY4eY4aDhLDS9xgQRhxRjyhnUhqVBp0hnySBy8UiXV5VMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//viZAAP+wKEGwNYerAAAA0gAAABAAABpAAAACAAADSAAAAEONVNvcNFlMboFNJgMxl8JpLBpZ5hW4MTDCEV8S/C2gLkwUAsxlpAYsDIAIhpUKBrEIOX9DEeeJciUjmGiPYdw5RPg/RIg1w2AtYfg0B7lUVZgF/ORD04pGNkWlCnkSex6nabxul2ME2DDKAqRPRZhdRpEDJAT8nhViyi7EBIwTMnhpnQha2sq5Op5EnsYI5gqggIM4ISFMEvB8A+wcAD0A8gTQHUHACjBYBAwkgyCNlkYZuHOhCXPEuJBhujCFlFOE7D4DXBmgjQIyCiBCgyAUYFQGeGuKcMkaRAxyD7JATMoSqNk7D/QxRrC25KFDjlN4wTYKsqhzDBE+FlE6FPEUE/E8KAzz2PU+DvPxD1AsLStVydRSZPxRqpWtT9wdxdMxpF9O49Ugi04n1IulyulyvLtgY2CJvX/zCep0/j9RSRTB3nYfJdS7F1MIzTMMMuhVkxJkTEoizKAn5bDTUbhtMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/74mQAD/AAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/++JkAA/wAABpAAAACAAADSAAAAEAAAGkAAAAIAAANIAAAARMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+        // 全局鼠标点击播放音效
+        // 每次点击调用这个就行
+        function playClickAudio() {
+        let audio = new Audio(clickSoundSrc);
+        // 重置播放位置，快速连点也能正常发声
+        audio.currentTime = 0;
+        audio.play();
+    }
+        document.addEventListener('click', function() {
+        playClickAudio();
+    });
+
+</script>
+</body>
+</html>
