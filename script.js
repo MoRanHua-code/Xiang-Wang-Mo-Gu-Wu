@@ -1837,11 +1837,11 @@
         el.sharePostcard.addEventListener('click', () => {
             playClickSound();
             const trip = gameState.currentTrip;
-            const shareText = `【小H去哪儿】小H从${trip.destName}寄来明信片："${trip.postcard.text}" 🐕🍄`;
+            const shareText = `【向往的小H】小H从${trip.destName}寄来明信片："${trip.postcard.text}" 🐕🍄`;
 
             if (navigator.share) {
                 navigator.share({
-                    title: '小H去哪儿',
+                    title: '向往的小H',
                     text: shareText
                 });
             } else {
