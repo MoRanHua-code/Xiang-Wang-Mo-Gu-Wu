@@ -1757,10 +1757,13 @@
         .interact-xiaoh-container {
             flex: 1;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
             padding: 20px;
             position: relative;
+            background: url('assets/背景/小h互动背景.png') no-repeat center center;
+            background-size: contain;
+            padding-bottom: 40px;
         }
         
         #interact-xiaoh {
@@ -2078,47 +2081,96 @@
         /* 对话框 */
         .tutorial-dialog {
             position: absolute;
-            bottom: 0;
-            left: 10px;
-            right: 10px;
-            max-width: calc(100% - 20px);
-            padding: 15px 20px;
-            background: linear-gradient(180deg, rgba(93, 58, 26, 0.95) 0%, rgba(61, 38, 18, 0.98) 100%);
-            border-radius: 16px 16px 0 0;
-            box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.3);
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+            max-width: calc(100% - 30px);
+            padding: 22px 26px 28px;
+            background: linear-gradient(180deg, rgba(120, 70, 35, 0.97) 0%, rgba(75, 45, 22, 0.99) 100%);
+            border-radius: 24px 24px 8px 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45), 
+                        inset 0 2px 0 rgba(255, 255, 255, 0.12),
+                        inset 0 -2px 0 rgba(0, 0, 0, 0.2);
             pointer-events: auto;
             box-sizing: border-box;
+            border: 3px solid rgba(255, 215, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .tutorial-dialog::before {
+            content: '';
+            position: absolute;
+            bottom: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 16px;
+            background: linear-gradient(180deg, rgba(75, 45, 22, 0.99) 0%, rgba(50, 30, 15, 0.95) 100%);
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-left: 2px solid rgba(255, 215, 0, 0.25);
+            border-right: 2px solid rgba(255, 215, 0, 0.25);
+        }
+
+        .tutorial-dialog::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 215, 0, 0.3) 20%, 
+                rgba(255, 215, 0, 0.6) 50%, 
+                rgba(255, 215, 0, 0.3) 80%, 
+                transparent 100%);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .tutorial-dialog .dialog-inner {
+            position: relative;
+            z-index: 1;
         }
 
         .dialog-speaker {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: bold;
             color: #FFD700;
-            margin-bottom: 8px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            margin-bottom: 14px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dialog-speaker::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle at 30% 30%, #FFF8E7, #FFD700);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.3);
         }
 
         .dialog-text {
-            font-size: 22px;
+            font-size: 20px;
             color: #FFF8E7;
-            line-height: 1.6;
+            line-height: 1.75;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
             white-space: pre-wrap;
-            margin-bottom: 15px;
-            min-height: 80px;
+            margin-bottom: 20px;
+            min-height: 90px;
             word-wrap: break-word;
+            letter-spacing: 0.5px;
         }
 
         .dialog-continue {
             text-align: center;
-            font-size: 13px;
+            font-size: 14px;
             color: #FFB347;
-            animation: pulse-scale 1s ease-in-out infinite;
-        }
-
-        @keyframes pulse-scale {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            opacity: 0.85;
         }
 
         /* 箭头指引 */

@@ -8,11 +8,11 @@
 
         // 普通风景明信片（一般情况下获得）
         const NORMAL_POSTCARDS = [
-            { text: '白鹅游过来了 / 我冲它叫 / 它不理我 / 走了 / 那棵树下有人在做饭 / 香得我尾巴停不下来\n何老师：H，你把白鹅当同类了吧。', image: 'assets/明信片素材/合岭村.png', name: '合岭村', location: 'field' },
-            { text: '水是什么味道 / 我舔了一口 / 咸的 / 湖里怎么没有鱼 / 那只熊猫为什么不跟我玩 / 它是不是装忙\n何老师：别舔，这是矿泉水。', image: 'assets/明信片素材/九塞沟.png', name: '九寨沟', location: 'river' },
-            { text: '大象好大 / 是很大的狗吗 / 不敢上前 / 河边有莲花 / 可以吃吗 / 闻起来不像肉\n黄老师：小h是个小吃货。', image: 'assets/明信片素材/曼远村.png', name: '曼远村', location: 'neighbor' },
-            { text: '好多人\n花好红\n我坐在花旁边\n大家都在拍照\n这个地方好大好亮\n何老师：小H，你也是这儿的游客呢。', image: 'assets/明信片素材/天安门.png', name: '天安门', location: 'market' },
-            { text: '好长的路\n我跑了好久\n风把云都吹散了\n远处的山叠在一起\n我想趴在这里看一会儿\n何老师：小H第一次看到这么远的风景吧。。', image: 'assets/明信片素材/长城.png', name: '长城', location: 'field' }
+            { text: '白鹅游过来了 / 我冲它叫 / 它不理我 / 走了 / 那棵树下有人在做饭 / 香得我尾巴停不下来\n夏老师：H，你把白鹅当同类了吧。', image: 'assets/明信片素材/合岭村.png', name: '合岭村', location: 'field' },
+            { text: '水是什么味道 / 我舔了一口 / 咸的 / 湖里怎么没有鱼 / 那只熊猫为什么不跟我玩 / 它是不是装忙\n夏老师：别舔，这是矿泉水。', image: 'assets/明信片素材/九塞沟.png', name: '九寨沟', location: 'river' },
+            { text: '大象好大 / 是很大的狗吗 / 不敢上前 / 河边有莲花 / 可以吃吗 / 闻起来不像肉\n王老师：小h是个小吃货。', image: 'assets/明信片素材/曼远村.png', name: '曼远村', location: 'neighbor' },
+            { text: '好多人\n花好红\n我坐在花旁边\n大家都在拍照\n这个地方好大好亮\n夏老师：小H，你也是这儿的游客呢。', image: 'assets/明信片素材/天安门.png', name: '天安门', location: 'market' },
+            { text: '好长的路\n我跑了好久\n风把云都吹散了\n远处的山叠在一起\n我想趴在这里看一会儿\n夏老师：小H第一次看到这么远的风景吧。。', image: 'assets/明信片素材/长城.png', name: '长城', location: 'field' }
         ];
 
         // 稀有明信片（需要携带特殊道具才能获得）
@@ -34,53 +34,53 @@
         };
         
         const GUEST_COMMENTS = [
-            '黄老师："小H你是不是又偷吃了我桌上的花生？"',
-            '何老师："慢点慢点！小H你拽着我跑什么呢！"',
-            '黄老师："小H你别盯了，没你的份。"',
-            '何老师："小H今天好乖，奖励加个鸡腿。"',
-            '彭彭："小H你别盯我碗，我自己还不够吃呢。"',
-            '彭小哥："小H这么乖，等下陪你玩。"'
+            '王老师："小H你是不是又偷吃了我桌上的花生？"',
+            '夏老师："慢点慢点！小H你拽着我跑什么呢！"',
+            '王老师："小H你别盯了，没你的份。"',
+            '夏老师："小H今天好乖，奖励加个鸡腿。"',
+            '明明："小H你别盯我碗，我自己还不够吃呢。"',
+            '张小哥："小H这么乖，等下陪你玩。"'
         ];
 
         // 互动文案
         const INTERACT_TEXT = {
             pet: [
-                '被摸了摸头，何老师也是这样哄我的~ 心情值+2',
-                '耳朵被揉了揉，舒服得直哼哼，跟黄老师揉我的时候一样。心情值+2',
-                '摸摸头！想起了何老师叫我小乖乖的时候~ 心情值+2',
-                '翻了个肚皮，跟彭彭刚来那天一样，忍不住嘛。心情值+2',
+                '被摸了摸头，夏老师也是这样哄我的~ 心情值+2',
+                '耳朵被揉了揉，舒服得直哼哼，跟王老师揉我的时候一样。心情值+2',
+                '摸摸头！想起了夏老师叫我小乖乖的时候~ 心情值+2',
+                '翻了个肚皮，跟明明刚来那天一样，忍不住嘛。心情值+2',
                 '有人轻轻拍了拍我，尾巴自己就摇起来了——蘑菇屋就是这么暖。心情值+2'
             ],
             play: [
-                '在院子里玩接球！彭彭又把球扔到屋顶上了…… 心情值+3',
-                '追蝴蝶追得比彭彭还快！他追不上我~ 心情值+3',
-                '何老师拿玉米逗我，追着玉米跑了三圈——掰玉米任务白干了。心情值+3',
+                '在院子里玩接球！明明又把球扔到屋顶上了…… 心情值+3',
+                '追蝴蝶追得比明明还快！他追不上我~ 心情值+3',
+                '夏老师拿玉米逗我，追着玉米跑了三圈——掰玉米任务白干了。心情值+3',
                 '和嘉宾一起在草坪上撒欢，镜头都追不上我！心情值+3',
                 '在水库边扔石子玩，我以为是让我捡回来……扑通。心情值+3'
             ],
             feed: {
                 bone: [
-                    '黄老师做饭时偷偷塞给我的，趁热！心情值+2',
-                    '彭彭从桌上偷偷拿给我的，别让黄老师发现~ 心情值+2',
-                    '黄老师说"骨头炖汤了"，不行！我要啃！心情值+2'
+                    '王老师做饭时偷偷塞给我的，趁热！心情值+2',
+                    '明明从桌上偷偷拿给我的，别让王老师发现~ 心情值+2',
+                    '王老师说"骨头炖汤了"，不行！我要啃！心情值+2'
                 ],
                 meat: [
-                    '昨晚烤全羊何老师专门给我留的，啃得满嘴油！心情值+3',
+                    '昨晚烤全羊夏老师专门给我留的，啃得满嘴油！心情值+3',
                     '烤全羊的香味我闻着就来了，谁也拦不住我~ 心情值+3',
-                    '彭彭看着我咽口水，但还是让给我了，嘿嘿。心情值+3'
+                    '明明看着我咽口水，但还是让给我了，嘿嘿。心情值+3'
                 ],
                 bento: [
-                    '黄小厨亲手做的便当！跟他们吃的一模一样，我也是蘑菇屋的人~ 心情值+4',
-                    '便当里是黄老师拿手的蛋炒饭，我把碗舔得比洗的还干净。心情值+4',
-                    '何老师帮我把便当掰碎，"慢慢吃别噎着"——好暖。心情值+4'
+                    '王小厨亲手做的便当！跟他们吃的一模一样，我也是蘑菇屋的人~ 心情值+4',
+                    '便当里是王老师拿手的蛋炒饭，我把碗舔得比洗的还干净。心情值+4',
+                    '夏老师帮我把便当掰碎，"慢慢吃别噎着"——好暖。心情值+4'
                 ],
                 steak: [
-                    '嘉宾点的牛排，黄老师帮我切好了一块一块喂我。心情值+4',
+                    '嘉宾点的牛排，夏老师帮我切好了一块一块喂我。心情值+4', 
                     '杰哥来的那期点的牛排，他走之前还特意给我留了一块！心情值+4',
                     '蘑菇屋待客的最高规格！我才是这里的老住户好吧~ 心情值+4'
                 ],
                 sushi: [
-                    '黄老师做的时候我一直蹲在旁边看，何老师说"够了够了你口水滴上去了"。心情值+5',
+                    '王老师做的时候我一直蹲在旁边看，夏老师说"够了够了你口水滴上去了"。心情值+5',
                     '这么好看的东西……我可以咬吗？咔嚓——好像不该咬的。不管了！心情值+5',
                     '他们吃寿司都蘸绿色的酱，我也蘸了一下——辣的！！但是好好吃！解锁新区域。心情值+5'
                 ]
@@ -90,19 +90,19 @@
         // ==================== 商店数据 ====================
         const SHOP_ITEMS = {
             food: [
-                { id: 'bone', name: '骨头', emoji: '🦴', price: 5, desc: '黄老师做饭时偷偷塞给我的，趁热啃！可以在蘑菇屋附近溜达。', level: 1, image: 'assets/食物/骨头.png' },
-                { id: 'meat', name: '羊排', emoji: '🍖', price: 15, desc: '昨晚烤全羊何老师专门给我留的！啃得满嘴油~ 跑得更远！', level: 2, image: 'assets/食物/羊排.png' },
-                { id: 'steak', name: '牛排', emoji: '🥩', price: 30, desc: '嘉宾点的牛排，黄老师帮我切好了，一块一块喂的。能去更远的地方！', level: 3, image: 'assets/食物/牛排.png' },
-                { id: 'sushi', name: '寿司', emoji: '🍣', price: 50, desc: '有嘉宾来的时候黄老师才会做的料理！解锁蘑菇屋周边新区域。', level: 4, image: 'assets/食物/寿司.png' },
-                { id: 'bento', name: '便当', emoji: '🍱', price: 30, desc: '黄小厨亲手做的便当，跟他们吃的一模一样！吃饱了去掰玉米的地方探险。', level: 3, image: 'assets/食物/便当.png' }
+                { id: 'bone', name: '骨头', emoji: '🦴', price: 5, desc: '王老师做饭时偷偷塞给我的，趁热啃！可以在蘑菇屋附近溜达。', level: 1, image: 'assets/食物/骨头.png' },
+                { id: 'meat', name: '羊排', emoji: '🍖', price: 15, desc: '昨晚烤全羊夏老师专门给我留的！啃得满嘴油~ 跑得更远！', level: 2, image: 'assets/食物/羊排.png' },
+                { id: 'steak', name: '牛排', emoji: '🥩', price: 30, desc: '嘉宾点的牛排，王老师帮我切好了，一块一块喂的。能去更远的地方！', level: 3, image: 'assets/食物/牛排.png' },
+                { id: 'sushi', name: '寿司', emoji: '🍣', price: 50, desc: '有嘉宾来的时候王老师才会做的料理！解锁蘑菇屋周边新区域。', level: 4, image: 'assets/食物/寿司.png' },
+                { id: 'bento', name: '便当', emoji: '🍱', price: 30, desc: '王小厨亲手做的便当，跟他们吃的一模一样！吃饱了去掰玉米的地方探险。', level: 3, image: 'assets/食物/便当.png' }
             ],
             prop: [
                 { id: 'swim_ring', name: '游泳圈', emoji: '🏊', price: 20, desc: '去水库玩要带的！上次杰哥带我下水用的就是这个。增加去河边的概率。', boostDest: ['river'], image: 'assets/道具/游泳圈.png' },
                 { id: 'compass', name: '指南针', emoji: '🧭', price: 35, desc: '他们寻宝任务用的同款指南针！增加去新地方探险的概率。', boostDest: ['field', 'river', 'neighbor', 'market'], image: 'assets/道具/指南针.png' },
-                { id: 'ball', name: '玩具球', emoji: '⚽', price: 15, desc: '彭彭扔给我的球，他每次都扔太远……增加去邻居家的概率。', boostDest: ['field'], image: 'assets/道具/玩具球.png' },
+                { id: 'ball', name: '玩具球', emoji: '⚽', price: 15, desc: '明明扔给我的球，他每次都扔太远……增加去邻居家的概率。', boostDest: ['field'], image: 'assets/道具/玩具球.png' },
                 { id: 'camera', name: '相机', emoji: '📷', price: 40, desc: '拍照神器！增加获得明信片概率。', boostDest: [], image: 'assets/道具/相机.png' },
                 { id: 'windmill', name: '风车', emoji: '🎠', price: 20, desc: '插在蘑菇屋门口的风车，我一看到就想往外跑！增加去郊外的概率。', image: 'assets/道具/风车.png' },
-                { id: 'bowl', name: '碗', emoji: '🥣', price: 15, desc: '何老师给我买的碗，说"小H也有自己的位置"。增加亲密度获取。', image: 'assets/道具/碗.png' },
+                { id: 'bowl', name: '碗', emoji: '🥣', price: 15, desc: '夏老师给我买的碗，说"小H也有自己的位置"。增加亲密度获取。', image: 'assets/道具/碗.png' },
                 { id: 'collar', name: '项圈', emoji: '🎀', price: 25, desc: '蘑菇屋定制的项圈，上面刻着"蘑菇屋小H"。增加获得稀有明信片的概率。', image: 'assets/道具/项圈.png' }
             ]
         };
@@ -1245,19 +1245,19 @@
         // 商品数据
         const SHOP_GOODS = {
             bone: { name: '骨头', price: 5, type: 'food', inventoryId: 'bone', 
-                   desc: '黄老师做饭时偷偷塞给我的，趁热啃！可以在蘑菇屋附近溜达。' },
+                   desc: '王老师做饭时偷偷塞给我的，趁热啃！可以在蘑菇屋附近溜达。' },
             meat: { name: '羊排', price: 15, type: 'food', inventoryId: 'meat', 
-                   desc: '昨晚烤全羊何老师专门给我留的！啃得满嘴油~ 跑得更远！' },
+                   desc: '昨晚烤全羊夏老师专门给我留的！啃得满嘴油~ 跑得更远！' },
             bento: { name: '便当', price: 30, type: 'food', inventoryId: 'bento', 
-                    desc: '黄小厨亲手做的便当，跟他们吃的一模一样！吃饱了去掰玉米的地方探险。' },
+                    desc: '王小厨亲手做的便当，跟他们吃的一模一样！吃饱了去掰玉米的地方探险。' },
             steak: { name: '牛排', price: 30, type: 'food', inventoryId: 'steak', 
-                    desc: '嘉宾点的牛排，黄老师帮我切好了，一块一块喂的。能去更远的地方！' },
+                    desc: '嘉宾点的牛排，王老师帮我切好了，一块一块喂的。能去更远的地方！' },
             sushi: { name: '寿司', price: 50, type: 'food', inventoryId: 'sushi', 
-                    desc: '有嘉宾来的时候黄老师才会做的料理！解锁蘑菇屋周边新区域。' },
+                    desc: '有嘉宾来的时候，王老师才会做的料理！解锁蘑菇屋周边新区域。' },
             ball: { name: '玩具球', price: 15, type: 'prop', inventoryId: 'ball', 
-                   desc: '彭彭扔给我的球，他每次都扔太远……增加去邻居家的概率。' },
+                   desc: '明明扔给我的球，他每次都扔太远……增加去邻居家的概率。' },
             bowl: { name: '碗', price: 15, type: 'prop', inventoryId: 'bowl', 
-                   desc: '何老师给我买的碗，说"小H也有自己的位置"。增加亲密度获取。' },
+                   desc: '夏老师给我买的碗，说"小H也有自己的位置"。增加亲密度获取。' },
             swim_ring: { name: '游泳圈', price: 20, type: 'prop', inventoryId: 'swim_ring', 
                         desc: '去水库玩要带的！上次杰哥带我下水用的就是这个。增加去河边的概率。' },
             windmill: { name: '风车', price: 20, type: 'prop', inventoryId: 'windmill', 
@@ -2666,7 +2666,7 @@ function showMushroomToast(message) {
                 title: '捡蘑菇',
                 dialogs: [
                     { speaker: '小H', text: '看见那些蘑菇了吗？' },
-                    { speaker: '小H', text: '这是蘑菇屋的"钱"，捡了就能去商店换好吃的。何老师管这叫"货币"，我管这叫"好吃的通行证"。' },
+                    { speaker: '小H', text: '这是蘑菇屋的"钱"，捡了就能去商店换好吃的。夏老师管这叫"货币"，我管这叫"好吃的通行证"。' },
                     { speaker: '旁白', text: '💡 点击任意蘑菇来收集' }
                 ],
                 guide: null,
@@ -2689,8 +2689,8 @@ function showMushroomToast(message) {
                 title: '和小H互动',
                 dialogs: [
                     { speaker: '小H', text: '你……你不摸摸我吗？' },
-                    { speaker: '何老师', text: '小H最喜欢被摸头了，你试试~' },
-                    { speaker: '小H', text: '何老师每次来都摸我头，超舒服的。' },
+                    { speaker: '夏老师', text: '小H最喜欢被摸头了，你试试~' },
+                    { speaker: '小H', text: '夏老师每次来都摸我头，超舒服的。' },
                     { speaker: '旁白', text: '💡 点击中间的小H进入互动界面，先点击【摸摸】，再点击【喂食】' }
                 ],
                 guide: null,
@@ -2840,10 +2840,10 @@ function showMushroomToast(message) {
             el.tutorialXiaoh.classList.remove('speaking');
 
             // 小H说话时不显示立绘（主屏幕已有小H）
-            if (speaker === '何老师') {
+            if (speaker === '夏老师') {
                 el.tutorialHe.classList.remove('hidden');
                 el.tutorialHe.classList.add('speaking');
-            } else if (speaker === '黄老师') {
+            } else if (speaker === '王老师') {
                 el.tutorialHuang.classList.remove('hidden');
                 el.tutorialHuang.classList.add('speaking');
             }
