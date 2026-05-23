@@ -2091,21 +2091,21 @@
         }
 
         .dialog-speaker {
-            font-size: 13px;
+            font-size: 18px;
             font-weight: bold;
             color: #FFD700;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .dialog-text {
-            font-size: 15px;
+            font-size: 22px;
             color: #FFF8E7;
-            line-height: 1.5;
+            line-height: 1.6;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
             white-space: pre-wrap;
-            margin-bottom: 12px;
-            min-height: 50px;
+            margin-bottom: 15px;
+            min-height: 80px;
             word-wrap: break-word;
         }
 
@@ -2177,9 +2177,9 @@
             transform: translateX(-50%);
             background: rgba(255, 215, 0, 0.9);
             color: #5D3A1A;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 18px;
             font-weight: bold;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
         }
