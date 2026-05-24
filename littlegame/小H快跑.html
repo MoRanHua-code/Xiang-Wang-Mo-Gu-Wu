@@ -126,13 +126,13 @@
     <div id="startScreen">
         <div class="title">🐕 小H快跑 🐕</div>
         <div class="subtitle">向往的生活 · 蘑菇屋大冒险</div>
-        <button class="btn" id="startBtn">开始游戏</button>
+        <button class="btn" id="startBtn" style="width: 240px;">开始游戏</button>
 
         <!-- 新增设置按钮 -->
-        <button class="btn" id="settingsBtn" style="margin-top: 15px; background: linear-gradient(180deg, #4CAF50, #45a049); font-size: 1em; padding: 10px 30px;">⚙️ 设置</button>
-        <button class="btn" id="backToCourtyardBtn" style="margin-top: 15px; background: linear-gradient(180deg, #8B7355, #6B5A3A); font-size: 1em; padding: 10px 30px;">🌳 返回庭院</button>
+        <button class="btn" id="settingsBtn" style="margin-top: 15px; background: linear-gradient(180deg, #4CAF50, #45a049); width: 240px;">⚙️ 设置</button>
+        <button class="btn" id="backToCourtyardBtn" style="margin-top: 15px; background: linear-gradient(180deg, #8B7355, #6B5A3A); width: 240px;">🌳 返回庭院</button>
         <div class="instructions">
-            👆 点击屏幕上半部分 = 跳跃<br>
+            👆 点击屏幕 = 跳跃<br>
 
                收集风车 +50分<br>
             🐔 躲避障碍物！
@@ -144,15 +144,13 @@
     <div id="settingsScreen" style="display: none; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); color: white; font-family: 'Courier New', monospace; z-index: 15;">
         <div class="title">⚙️ 设置</div>
 
-        <div style="margin: 20px 0; text-align: center;">
-            <div style="margin: 15px 0; font-size: 1.2em;">
-                <span>🎵 背景音乐</span>
-                <button id="bgmToggle" class="btn" style="margin-left: 20px; padding: 8px 20px; font-size: 0.9em;">开启</button>
-            </div>
-            <div style="margin: 15px 0; font-size: 1.2em;">
-                <span>🔊 音效</span>
-                <button id="sfxToggle" class="btn" style="margin-left: 20px; padding: 8px 20px; font-size: 0.9em;">开启</button>
-            </div>
+        <div style="margin: 15px 0; font-size: 1.2em; display: flex; align-items: center;">
+            <span style="width: 130px; text-align: left;">🎵 背景音乐</span>
+            <button id="bgmToggle" class="btn" style="margin-left: 10px; padding: 8px 15px; font-size: 0.9em; width: 70px; white-space: nowrap; text-align: left;">开启</button>
+        </div>
+        <div style="margin: 15px 0; font-size: 1.2em; display: flex; align-items: center;">
+            <span style="width: 130px; text-align: left;">🔊 音效</span>
+            <button id="sfxToggle" class="btn" style="margin-left: 10px; padding: 8px 15px; font-size: 0.9em; width: 70px; white-space: nowrap; text-align: left;">开启</button>
         </div>
         <button class="btn" id="backBtn" style="margin-top: 30px;">返回</button>
     </div>
@@ -1226,22 +1224,22 @@
             if (isPeacock) {
                 // 孔雀：在天上
                 obs.y = GROUND_Y - 150 - Math.random() * 80;
-                obs.width = 70;          // 绘制尺寸
-                obs.height = 70;         // 绘制尺寸
-                obs.hitboxX = 15;        // ← 碰撞箱左边距（居中缩小）
-                obs.hitboxY = 15;        // ← 碰撞箱上边距
-                obs.hitboxW = 40;        // ← 碰撞箱宽度（比绘制小）
-                obs.hitboxH = 40;        // ← 碰撞箱高度
+                obs.width   = 50;          // 绘制尺寸
+                obs.height  = 50;         // 绘制尺寸
+                obs.hitboxX = 10;        // ← 碰撞箱左边距（居中缩小）
+                obs.hitboxY = 10;        // ← 碰撞箱上边距
+                obs.hitboxW = 30;        // ← 碰撞箱宽度（比绘制小）
+                obs.hitboxH = 30;        // ← 碰撞箱高度
                 obs.duckable = false;
             } else {
                 // 鸭子：在地上
-                obs.y = GROUND_Y - 65;      // 鸭子y轴位置   数值越小越往下
-                obs.width = 80;
-                obs.height = 100;
-                obs.hitboxX = 15;          //数值越大越往右
-                obs.hitboxY = 18;           // ← 如果鸭子往下移，碰撞箱也往下调,数值越大越往下
-                obs.hitboxW = 45;
-                obs.hitboxH = 40;
+                obs.y = GROUND_Y - 68;      // 鸭子y轴位置   数值越小越往下
+                obs.width   = 70;
+                obs.height  = 90;
+                obs.hitboxX = 18;          //数值越大越往右
+                obs.hitboxY = 30;           // ← 如果鸭子往下移，碰撞箱也往下调,数值越大越往下
+                obs.hitboxW = 30;
+                obs.hitboxH = 30;
                 obs.duckable = Math.random() > 0.7;
             }
 
@@ -1573,43 +1571,32 @@
         // 触摸事件
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            const touch = e.touches[0];
-            const rect = canvas.getBoundingClientRect();
-            const y = (touch.clientY - rect.top) / rect.height;
-            
             if (gameState === GameState.PLAYING) {
-                if (y < 0.5) {
-                    handleInput('jump');
-                } else {
-                    handleInput('duck');
-                }
+                //删除计算触摸位置 y 的代码,改成全屏幕跳跃
+                handleInput('jump');
             }
         }, { passive: false });
         
         canvas.addEventListener('touchend', (e) => {
-            if (gameState === GameState.PLAYING) {
-                handleInput('unduck');
-            }
+            // 全屏跳跃模式，不需要处理 touchend
         });
         
         // 鼠标事件（桌面端）
+
         canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const y = (e.clientY - rect.top) / rect.height;
-            
+            // 暂停状态下点击恢复游戏
+            if (gameState === GameState.PAUSED) {
+                togglePause();
+                return;
+            }
+
             if (gameState === GameState.PLAYING) {
-                if (y < 0.5) {
-                    handleInput('jump');
-                } else {
-                    handleInput('duck');
-                }
+                handleInput('jump');
             }
         });
-        
+
         canvas.addEventListener('mouseup', () => {
-            if (gameState === GameState.PLAYING) {
-                handleInput('unduck');
-            }
+            // 全屏跳跃模式，不需要处理 mouseup
         });
 
 

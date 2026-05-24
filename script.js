@@ -1,9 +1,9 @@
 // ==================== 游戏数据 ====================
         const DESTINATIONS = {
-            field: { name: '田野', emoji: '🌾', bg: 'linear-gradient(180deg, #87CEEB 0%, #90EE90 100%)' },
-            river: { name: '河边', emoji: '🌊', bg: 'linear-gradient(180deg, #87CEEB 0%, #4FC3F7 100%)' },
-            neighbor: { name: '邻居家', emoji: '🏠', bg: 'linear-gradient(180deg, #FFE0B2 0%, #FFCC80 100%)' },
-            market: { name: '集市', emoji: '🏪', bg: 'linear-gradient(180deg, #FFCDD2 0%, #EF9A9A 100%)' }
+            field: { name: '田野', bg: 'linear-gradient(180deg, #87CEEB 0%, #90EE90 100%)' },
+            river: { name: '河边', bg: 'linear-gradient(180deg, #87CEEB 0%, #4FC3F7 100%)' },
+            neighbor: { name: '邻居家', bg: 'linear-gradient(180deg, #FFE0B2 0%, #FFCC80 100%)' },
+            market: { name: '集市', bg: 'linear-gradient(180deg, #FFCDD2 0%, #EF9A9A 100%)' }
         };
 
         // 普通风景明信片（一般情况下获得）
@@ -90,20 +90,20 @@
         // ==================== 商店数据 ====================
         const SHOP_ITEMS = {
             food: [
-                { id: 'bone', name: '骨头', emoji: '🦴', price: 5, desc: '王老师做饭时偷偷塞给我的，趁热啃！可以在蘑菇屋附近溜达。', level: 1, image: 'assets/食物/骨头.png' },
-                { id: 'meat', name: '羊排', emoji: '🍖', price: 15, desc: '昨晚烤全羊夏老师专门给我留的！啃得满嘴油~ 跑得更远！', level: 2, image: 'assets/食物/羊排.png' },
-                { id: 'steak', name: '牛排', emoji: '🥩', price: 30, desc: '嘉宾点的牛排，王老师帮我切好了，一块一块喂的。能去更远的地方！', level: 3, image: 'assets/食物/牛排.png' },
-                { id: 'sushi', name: '寿司', emoji: '🍣', price: 50, desc: '有嘉宾来的时候王老师才会做的料理！解锁蘑菇屋周边新区域。', level: 4, image: 'assets/食物/寿司.png' },
-                { id: 'bento', name: '便当', emoji: '🍱', price: 30, desc: '王小厨亲手做的便当，跟他们吃的一模一样！吃饱了去掰玉米的地方探险。', level: 3, image: 'assets/食物/便当.png' }
+                { id: 'bone', name: '骨头', price: 5, desc: '黄老师做饭时偷偷塞给我的，趁热啃！可以在蘑菇屋附近溜达。', level: 1, image: 'assets/食物/骨头.png' },
+                { id: 'meat', name: '羊排', price: 15, desc: '昨晚烤全羊何老师专门给我留的！啃得满嘴油~ 跑得更远！', level: 2, image: 'assets/食物/羊排.png' },
+                { id: 'steak', name: '牛排', price: 30, desc: '嘉宾点的牛排，黄老师帮我切好了，一块一块喂的。能去更远的地方！', level: 3, image: 'assets/食物/牛排.png' },
+                { id: 'sushi', name: '寿司', price: 50, desc: '有嘉宾来的时候黄老师才会做的料理！解锁蘑菇屋周边新区域。', level: 4, image: 'assets/食物/寿司.png' },
+                { id: 'bento', name: '便当', price: 30, desc: '黄小厨亲手做的便当，跟他们吃的一模一样！吃饱了去掰玉米的地方探险。', level: 3, image: 'assets/食物/便当.png' }
             ],
             prop: [
-                { id: 'swim_ring', name: '游泳圈', emoji: '🏊', price: 20, desc: '去水库玩要带的！上次杰哥带我下水用的就是这个。增加去河边的概率。', boostDest: ['river'], image: 'assets/道具/游泳圈.png' },
-                { id: 'compass', name: '指南针', emoji: '🧭', price: 35, desc: '他们寻宝任务用的同款指南针！增加去新地方探险的概率。', boostDest: ['field', 'river', 'neighbor', 'market'], image: 'assets/道具/指南针.png' },
-                { id: 'ball', name: '玩具球', emoji: '⚽', price: 15, desc: '明明扔给我的球，他每次都扔太远……增加去邻居家的概率。', boostDest: ['field'], image: 'assets/道具/玩具球.png' },
-                { id: 'camera', name: '相机', emoji: '📷', price: 40, desc: '拍照神器！增加获得明信片概率。', boostDest: [], image: 'assets/道具/相机.png' },
-                { id: 'windmill', name: '风车', emoji: '🎠', price: 20, desc: '插在蘑菇屋门口的风车，我一看到就想往外跑！增加去郊外的概率。', image: 'assets/道具/风车.png' },
-                { id: 'bowl', name: '碗', emoji: '🥣', price: 15, desc: '夏老师给我买的碗，说"小H也有自己的位置"。增加亲密度获取。', image: 'assets/道具/碗.png' },
-                { id: 'collar', name: '项圈', emoji: '🎀', price: 25, desc: '蘑菇屋定制的项圈，上面刻着"蘑菇屋小H"。增加获得稀有明信片的概率。', image: 'assets/道具/项圈.png' }
+                { id: 'swim_ring', name: '游泳圈', price: 20, desc: '去水库玩要带的！上次杰哥带我下水用的就是这个。增加去河边的概率。', boostDest: ['river'], image: 'assets/道具/游泳圈.png' },
+                { id: 'compass', name: '指南针', price: 35, desc: '他们寻宝任务用的同款指南针！增加去新地方探险的概率。', boostDest: ['field', 'river', 'neighbor', 'market'], image: 'assets/道具/指南针.png' },
+                { id: 'ball', name: '玩具球', price: 15, desc: '彭彭扔给我的球，他每次都扔太远……增加去邻居家的概率。', boostDest: ['field'], image: 'assets/道具/玩具球.png' },
+                { id: 'camera', name: '相机', price: 40, desc: '拍照神器！增加获得明信片概率。', boostDest: [], image: 'assets/道具/相机.png' },
+                { id: 'windmill', name: '风车', price: 20, desc: '插在蘑菇屋门口的风车，我一看到就想往外跑！增加去郊外的概率。', image: 'assets/道具/风车.png' },
+                { id: 'bowl', name: '碗', price: 15, desc: '何老师给我买的碗，说"小H也有自己的位置"。增加亲密度获取。', image: 'assets/道具/碗.png' },
+                { id: 'collar', name: '项圈', price: 25, desc: '蘑菇屋定制的项圈，上面刻着"蘑菇屋小H"。增加获得稀有明信片的概率。', image: 'assets/道具/项圈.png' }
             ]
         };
 
@@ -1004,7 +1004,7 @@
                     showFloatText(
                         rect.left - containerRect.left + rect.width / 2,
                         rect.top - containerRect.top,
-                        `+${reward} 🍄`
+                        `+${reward}`
                     );
                 }, 500);
             }, 500);
@@ -1036,7 +1036,7 @@
             // 渲染食物区域
             const foodSection = document.createElement('div');
             foodSection.className = 'inventory-section';
-            foodSection.innerHTML = '<div class="section-title">🍖 食物（必须选择）</div>';
+            foodSection.innerHTML = '<div class="section-title">食物（必须选择）</div>';
             
             SHOP_ITEMS.food.forEach(item => {
                 if (gameState.inventory[item.id] > 0) {
@@ -1066,7 +1066,7 @@
             // 渲染道具区域
             const propSection = document.createElement('div');
             propSection.className = 'inventory-section';
-            propSection.innerHTML = '<div class="section-title">🎒 道具（可选）</div>';
+            propSection.innerHTML = '<div class="section-title">道具（可选）</div>';
             
             SHOP_ITEMS.prop.forEach(item => {
                 if (gameState.inventory[item.id] > 0) {
@@ -1816,14 +1816,14 @@
             
             // 同时恢复庭院和屋子的探险按钮
             el.goBtn.disabled = false;
-            el.goBtn.textContent = '🎒 出发探险';
+            el.goBtn.textContent = '出发探险';
             el.roomGoBtn.disabled = false;
-            el.roomGoBtn.textContent = '🎒 出发探险';
+            el.roomGoBtn.textContent = '出发探险';
 
             gameState.xiaohStatus = 'home';
             gameState.currentTrip = null;
 
-            showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '欢迎回家！🍄 +' + trip.reward);
+            showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '欢迎回家！+' + trip.reward);
 
             // 如果是教程模式下领取奖励，继续步骤6的教程
             if (tutorialStarted && !gameState.tutorialCompleted) {
@@ -1837,7 +1837,7 @@
         el.sharePostcard.addEventListener('click', () => {
             playClickSound();
             const trip = gameState.currentTrip;
-            const shareText = `【向往的小H】小H从${trip.destName}寄来明信片："${trip.postcard.text}" 🐕🍄`;
+            const shareText = `【向往的小H】小H从${trip.destName}寄来明信片："${trip.postcard.text}"`;
 
             if (navigator.share) {
                 navigator.share({
@@ -2500,7 +2500,7 @@ function checkMushroomReward() {
         const count = parseInt(lastReward);
         const total = parseInt(totalReward || '0');
 
-        showMushroomToast(`🍄 小H快跑获得 ${count} 个蘑菇！累计: ${total} 个`);
+        showMushroomToast(`小H快跑获得 ${count} 个蘑菇！累计: ${total} 个`);
 
         gameState.mushrooms += count;
         updateMushroomDisplay();
@@ -2722,10 +2722,10 @@ function showMushroomToast(message) {
                 step: 7,
                 title: '教程完成',
                 dialogs: [
-                    { speaker: '旁白', text: '🎉 恭喜完成新手教程！记住这几件事——' },
-                    { speaker: '旁白', text: '🍄 蘑菇是这里的钱，捡得越多能买的东西越好' },
-                    { speaker: '旁白', text: '🍖 带不同的食物，小H会去不同的地方' },
-                    { speaker: '旁白', text: '🖼️ 小H每次出门都会寄明信片回来' },
+                    { speaker: '旁白', text: '恭喜完成新手教程！记住这几件事——' },
+                    { speaker: '旁白', text: '蘑菇是这里的钱，捡得越多能买的东西越好' },
+                    { speaker: '旁白', text: '带不同的食物，小H会去不同的地方' },
+                    { speaker: '旁白', text: '小H每次出门都会寄明信片回来' },
                     { speaker: '小H', text: '懂了不？不懂就再看我出去一趟。' },
                     { speaker: '小H', text: '好了，你可以自由发挥了。我去趴会儿。' },
                     { speaker: '小H', text: '有事叫我。汪。' }
@@ -3048,7 +3048,7 @@ function showRunGameUnlockToast() {
         max-width: 80%;
     `;
     toast.innerHTML = `
-        <div style="font-size: 1.5em; margin-bottom: 5px;">🏃‍♂️🐕</div>
+        <div style="font-size: 1.5em; margin-bottom: 5px;"></div>
         <div>小H快跑已解锁！</div>
         <div style="font-size: 0.85em; margin-top: 5px; color: #666;">快去庭院右下角体验吧~</div>
     `;
@@ -3166,7 +3166,7 @@ function checkShowOpening() {
                 modal.className = 'modal-overlay';
                 modal.innerHTML = `
                     <div class="modal-content" style="text-align: center; padding: 30px 20px;">
-                        <div style="font-size: 60px; margin-bottom: 15px;">🏃‍♂️💨</div>
+                        <div style="font-size: 60px; margin-bottom: 15px;"></div>
                         <div style="font-size: 18px; color: #5a4a3a; margin-bottom: 10px; font-weight: bold;">
                             小H旅行去了
                         </div>

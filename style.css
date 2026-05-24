@@ -598,16 +598,20 @@
             transform: none;
             width: 100px;
             height: 45px;
-            background: linear-gradient(180deg, #FF6B6B 0%, #EE5A5A 100%);
+            background: rgba(255,255,255,0.9);
             border: none;
             border-radius: 20px;
-            color: white;
+            color: #5D3A1A;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(238, 90, 90, 0.4);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             z-index: 100;
-            transition: all 0.2s;
+            transition: all 0.3s;
+        }
+        #go-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         #go-btn:active { transform: scale(0.95); }
         #go-btn:disabled {
@@ -624,16 +628,20 @@
             transform: none;
             width: 100px;
             height: 45px;
-            background: linear-gradient(180deg, #4ECDC4 0%, #44A3A0 100%);
+            background: rgba(255,255,255,0.9);
             border: none;
             border-radius: 20px;
-            color: white;
+            color: #5D3A1A;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             z-index: 100;
-            transition: all 0.2s;
+            transition: all 0.3s;
+        }
+        #shop-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         #shop-btn:active { transform: scale(0.95); }
 
@@ -1812,18 +1820,18 @@
         }
         
         #action-feed {
-            background: linear-gradient(180deg, #FFB347 0%, #FF8C00 100%);
-            color: white;
+            background: rgba(255,255,255,0.9);
+            color: #5D3A1A;
         }
         
         #action-pet {
-            background: linear-gradient(180deg, #FFB6C1 0%, #FF69B4 100%);
-            color: white;
+            background: rgba(255,255,255,0.9);
+            color: #5D3A1A;
         }
         
         #action-play {
-            background: linear-gradient(180deg, #87CEEB 0%, #4169E1 100%);
-            color: white;
+            background: rgba(255,255,255,0.9);
+            color: #5D3A1A;
         }
         
         .action-btn:active {
@@ -2387,16 +2395,20 @@
     left: 20px;         /* 和探险按钮左对齐 */
     width: 100px;
     height: 45px;
-    background: linear-gradient(180deg, #FFD93D 0%, #F6AD55 100%);
+    background: rgba(255,255,255,0.9);
     border: none;
     border-radius: 20px;
     color: #5D3A1A;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     z-index: 100;
-    transition: all 0.2s;
+    transition: all 0.3s;
+}
+#run-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 #run-btn:active { transform: scale(0.95); }
 
@@ -2407,15 +2419,19 @@
     left: 20px;         /* 和探险按钮左对齐 */
     width: 100px;
     height: 45px;
-    background: linear-gradient(180deg, #FFD93D 0%, #F6AD55 100%);
+    background: rgba(255,255,255,0.9);
     border: none;
     border-radius: 20px;
     color: #5D3A1A;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     z-index: 100;
-    transition: all 0.2s;
+    transition: all 0.3s;
+}
+#room-run-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 #room-run-btn:active { transform: scale(0.95); }
