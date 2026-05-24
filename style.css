@@ -118,12 +118,13 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(255,255,255,0.9);
-            border-radius: 25px;
-            padding: 8px 16px;
+            background: url('assets/组件/蘑菇数值.png') no-repeat center/cover;
+            background-size:100px 80px;
+            width: 80px;
+            height: 40px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             z-index: 100;
         }
@@ -145,7 +146,7 @@
             left: 20px;
             padding: 8px 14px;
             background: rgba(255,255,255,0.9);
-            border-radius: 20px;
+            border-radius: 0;
             border: none;
             font-size: 14px;
             font-weight: bold;
@@ -482,12 +483,14 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(255,255,255,0.9);
+            background: url('assets/组件/蘑菇数值.png') no-repeat center/cover;
+            background-size: cover;
+            width: 80px;
+            height: 40px;
             border-radius: 25px;
-            padding: 8px 16px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             z-index: 100;
         }
@@ -525,7 +528,7 @@
             height: 45px;
             background: linear-gradient(180deg, #FF6B6B 0%, #EE5A5A 100%);
             border: none;
-            border-radius: 20px;
+            border-radius: 0;
             color: white;
             font-size: 16px;
             font-weight: bold;
@@ -551,7 +554,7 @@
             height: 45px;
             background: linear-gradient(180deg, #4ECDC4 0%, #44A3A0 100%);
             border: none;
-            border-radius: 20px;
+            border-radius: 0;
             color: white;
             font-size: 16px;
             font-weight: bold;
@@ -600,7 +603,7 @@
             height: 45px;
             background: rgba(255,255,255,0.9);
             border: none;
-            border-radius: 20px;
+            border-radius: 0;
             color: #5D3A1A;
             font-size: 16px;
             font-weight: bold;
@@ -630,7 +633,7 @@
             height: 45px;
             background: rgba(255,255,255,0.9);
             border: none;
-            border-radius: 20px;
+            border-radius: 0;
             color: #5D3A1A;
             font-size: 16px;
             font-weight: bold;
@@ -1814,7 +1817,7 @@
             width: 100px;
             height: 55px;
             border: none;
-            border-radius: 18px;
+            border-radius: 0;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
@@ -2404,7 +2407,7 @@
     height: 45px;
     background: rgba(255,255,255,0.9);
     border: none;
-    border-radius: 20px;
+    border-radius: 0;
     color: #5D3A1A;
     font-size: 16px;
     font-weight: bold;
@@ -2428,7 +2431,7 @@
     height: 45px;
     background: rgba(255,255,255,0.9);
     border: none;
-    border-radius: 20px;
+    border-radius: 0;
     color: #5D3A1A;
     font-size: 16px;
     font-weight: bold;
